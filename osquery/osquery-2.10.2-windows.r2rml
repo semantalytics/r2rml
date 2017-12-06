@@ -1,0 +1,230 @@
+
+appcompat_shims
+Application Compatibility shims are a way to persist malware. This table presents the AppCompat Shim information from the registry in a nice format. See http://files.brucon.org/2015/Tomczak_and_Ballenthin_Shims_for_the_Win.pdf for more details.
+Column 	Type 	Description
+executable 	TEXT 	Name of the executable that is being shimmed. This is pulled from the registry.
+path 	TEXT 	This is the path to the SDB database.
+description 	TEXT 	Description of the SDB.
+install_time 	INTEGER 	Install time of the SDB
+type 	TEXT 	Type of the SDB database.
+sdb_id 	TEXT 	Unique GUID of the SDB.
+select * from appcompat_shims;
+authenticode
+File (executable, bundle, installer, disk) code signing status.
+Column 	Type 	Description
+path 	TEXT 	Must provide a path or directory
+original_program_name 	TEXT 	The original program name that the publisher has signed
+serial_number 	TEXT 	The certificate serial number
+issuer_name 	TEXT 	The certificate issuer name
+subject_name 	TEXT 	The certificate subject name
+result 	TEXT 	The signature check result
+SELECT * FROM authenticode WHERE path = 'C:\Windows\notepad.exe'
+SELECT process.pid, process.path, signature.result FROM processes as process LEFT JOIN authenticode AS signature ON process.path = signature.path;
+autoexec
+Aggregate of executables that will automatically execute on the target machine. This is an amalgamation of other tables like services, scheduled tasks, startup_items and more.
+Column 	Type 	Description
+path 	TEXT 	Path to the executable
+name 	TEXT 	Name of the program
+source 	TEXT 	Source table of the autoexec item
+chocolatey_packages
+Chocolatey packages installed in a system.
+Column 	Type 	Description
+name 	TEXT 	Package display name
+version 	TEXT 	Package-supplied version
+summary 	TEXT 	Package-supplied summary
+author 	TEXT 	Optional package author
+license 	TEXT 	License under which package is launched
+path 	TEXT 	Path at which this package resides
+drivers
+Details for in-use Windows device drivers. This does not display installed but unused drivers.
+Column 	Type 	Description
+device_id 	TEXT 	Device ID
+device_name 	TEXT 	Device name
+image 	TEXT 	Path to driver image file
+description 	TEXT 	Driver description
+service 	TEXT 	Driver service name, if one exists
+service_key 	TEXT 	Driver service registry key
+version 	TEXT 	Driver version
+inf 	TEXT 	Associated inf file
+class 	TEXT 	Device/driver class name
+provider 	TEXT 	Driver provider
+manufacturer 	TEXT 	Device manufacturer
+driver_key 	TEXT 	Driver key
+date 	BIGINT 	Driver date
+select * from drivers
+ie_extensions
+Internet Explorer browser extensions.
+Column 	Type 	Description
+name 	TEXT 	Extension display name
+registry_path 	TEXT 	Extension identifier
+version 	TEXT 	Version of the executable
+path 	TEXT 	Path to executable
+logical_drives
+Details for logical drives on the system. A logical drive generally represents a single partition.
+Column 	Type 	Description
+device_id 	TEXT 	The drive id, usually the drive name, e.g., 'C:'.
+type 	TEXT 	The type of disk drive this logical drive represents.
+free_space 	BIGINT 	The amount of free space, in bytes, of the drive.
+size 	BIGINT 	The total amount of space, in bytes, of the drive.
+file_system 	TEXT 	The file system of the drive.
+boot_partition 	INTEGER 	True if Windows booted from this drive.
+select * from logical_drives
+select free_space from logical_drives where device_id = 'C:'
+patches
+Lists all the patches applied. Note: This does not include patches applied via MSI or downloaded from Windows Update (e.g. Service Packs).
+Column 	Type 	Description
+csname 	TEXT 	The name of the host the patch is installed on.
+hotfix_id 	TEXT 	The KB ID of the patch.
+caption 	TEXT 	Short description of the patch.
+description 	TEXT 	Fuller description of the patch.
+fix_comments 	TEXT 	Additional comments about the patch.
+installed_by 	TEXT 	The system context in which the patch as installed.
+install_date 	TEXT 	Indicates when the patch was installed. Lack of a value does not indicate that the patch was not installed.
+installed_on 	TEXT 	The date when the patch was installed.
+select * from patches
+physical_disk_performance
+Provides provides raw data from performance counters that monitor hard or fixed disk drives on the system.
+Column 	Type 	Description
+name 	TEXT 	Name of the physical disk
+avg_disk_bytes_per_read 	BIGINT 	Average number of bytes transferred from the disk during read operations
+avg_disk_bytes_per_write 	BIGINT 	Average number of bytes transferred to the disk during write operations
+avg_disk_read_queue_length 	BIGINT 	Average number of read requests that were queued for the selected disk during the sample interval
+avg_disk_write_queue_length 	BIGINT 	Average number of write requests that were queued for the selected disk during the sample interval
+avg_disk_sec_per_read 	INTEGER 	Average time, in seconds, of a read operation of data from the disk
+avg_disk_sec_per_write 	INTEGER 	Average time, in seconds, of a write operation of data to the disk
+current_disk_queue_length 	INTEGER 	Number of requests outstanding on the disk at the time the performance data is collected
+percent_disk_read_time 	BIGINT 	Percentage of elapsed time that the selected disk drive is busy servicing read requests
+percent_disk_write_time 	BIGINT 	Percentage of elapsed time that the selected disk drive is busy servicing write requests
+percent_disk_time 	BIGINT 	Percentage of elapsed time that the selected disk drive is busy servicing read or write requests
+percent_idle_time 	BIGINT 	Percentage of time during the sample interval that the disk was idle
+pipes
+Named and Anonymous pipes.
+Column 	Type 	Description
+pid 	BIGINT 	Process ID of the process to which the pipe belongs
+name 	TEXT 	Name of the pipe
+instances 	INTEGER 	Number of instances of the named pipe
+max_instances 	INTEGER 	The maximum number of instances creatable for this pipe
+flags 	TEXT 	The flags indicating whether this pipe connection is a server or client end, and if the pipe for sending messages or bytes
+select * from pipes
+programs
+Rrepresents products as they are installed by Windows Installer. A product generally correlates to one installation package.
+Column 	Type 	Description
+name 	TEXT 	Commonly used product name.
+version 	TEXT 	Product version information.
+install_source 	TEXT 	The installation source directory of the product.
+language 	TEXT 	The language of the product.
+publisher 	TEXT 	Name of the product supplier.
+uninstall_string 	TEXT 	Path and filename of the uninstaller.
+install_date 	TEXT 	Date that this product was installed on the system.
+identifying_number 	TEXT 	Product identification such as a serial number on software, or a die number on a hardware chip.
+select * from programs
+registry
+All of the Windows registry hives.
+Column 	Type 	Description
+key 	TEXT 	Name of the key to search for
+path 	TEXT 	Full path to the value
+name 	TEXT 	Name of the registry value entry
+type 	TEXT 	Type of the registry value, or 'subkey' if item is a subkey
+data 	TEXT 	Data content of registry value
+mtime 	BIGINT 	timestamp of the most recent registry write
+select path, key, name from registry where key = 'HKEY_USERS'; -- get user SIDS. Note: path is key+name
+select path from registry where key like 'HKEY_USERS\.Default\%'; -- a SQL wildcard match; will not recurse subkeys
+select path from registry where key like 'HKEY_USERS\.Default\Software\%%'; -- recursing query (compare with 1 %)
+select path from registry where key like 'HKEY_LOCAL_MACHINE\Software\Micr%ft\%' and type = 'subkey' LIMIT 10; -- midfix wildcard match
+select name, type, data from registry where path like 'HKEY_USERS\%\Control Panel\International\User Profile\Languages'; -- get users' current UI language. Note: osquery cannot reference HKEY_CURRENT_USER
+select name, type, data from registry where path like 'HKEY_USERS\%\Software\Microsoft\Windows\CurrentVersion\Explorer\Wallpapers\%'; -- list all of the desktop wallpapers
+select name, type, data from registry where key like 'HKEY_USERS\%\Software\Microsoft\Windows\CurrentVersion\Explorer\Wallpapers'; -- same, but filtering by key instead of path
+scheduled_tasks
+Lists all of the tasks in the Windows task scheduler.
+Column 	Type 	Description
+name 	TEXT 	Name of the scheduled task
+action 	TEXT 	Actions executed by the scheduled task
+path 	TEXT 	Path to the executable to be run
+enabled 	INTEGER 	Whether or not the scheduled task is enabled
+state 	TEXT 	State of the scheduled task
+hidden 	INTEGER 	Whether or not the task is visible in the UI
+last_run_time 	INTEGER 	Timestamp the task last ran
+next_run_time 	INTEGER 	Timestamp the task is scheduled to run next
+last_run_message 	TEXT 	Exit status message of the last task run
+last_run_code 	TEXT 	Exit status code of the last task run
+select * from scheduled_tasks
+select * from scheduled_tasks where hidden=1 and enabled=1
+services
+Lists all installed Windows services and their relevant data.
+Column 	Type 	Description
+name 	TEXT 	Service name
+service_type 	TEXT 	Service Type: OWN_PROCESS, SHARE_PROCESS and maybe Interactive (can interact with the desktop)
+display_name 	TEXT 	Service Display name
+status 	TEXT 	Service Current status: STOPPED, START_PENDING, STOP_PENDING, RUNNING, CONTINUE_PENDING, PAUSE_PENDING, PAUSED
+pid 	INTEGER 	the Process ID of the service
+start_type 	TEXT 	Service start type: BOOT_START, SYSTEM_START, AUTO_START, DEMAND_START, DISABLED
+win32_exit_code 	INTEGER 	The error code that the service uses to report an error that occurs when it is starting or stopping
+service_exit_code 	INTEGER 	The service-specific error code that the service returns when an error occurs while the service is starting or stopping
+path 	TEXT 	Path to Service Executable
+module_path 	TEXT 	Path to ServiceDll
+description 	TEXT 	Service Description
+user_account 	TEXT 	The name of the account that the service process will be logged on as when it runs. This name can be of the form Domain\UserName. If the account belongs to the built-in domain, the name can be of the form .\UserName.
+select * from services
+shared_resources
+Displays shared resources on a computer system running Windows. This may be a disk drive, printer, interprocess communication, or other sharable device.
+Column 	Type 	Description
+description 	TEXT 	A textual description of the object
+install_date 	TEXT 	Indicates when the object was installed. Lack of a value does not indicate that the object is not installed.
+status 	TEXT 	String that indicates the current status of the object.
+allow_maximum 	INTEGER 	Number of concurrent users for this resource has been limited. If True, the value in the MaximumAllowed property is ignored.
+maximum_allowed 	INTEGER 	Limit on the maximum number of users allowed to use this resource concurrently. The value is only valid if the AllowMaximum property is set to FALSE.
+name 	TEXT 	Alias given to a path set up as a share on a computer system running Windows.
+path 	TEXT 	Local path of the Windows share.
+type 	INTEGER 	Type of resource being shared. Types include: disk drives, print queues, interprocess communications (IPC), and general devices.
+select * from shared_resources
+windows_events
+Windows Event logs.
+Column 	Type 	Description
+time 	BIGINT 	Timestamp the event was received
+datetime 	TEXT 	System time at which the event occurred
+source 	TEXT 	Source or channel of the event
+provider_name 	TEXT 	Provider name of the event
+provider_guid 	TEXT 	Provider guid of the event
+eventid 	INTEGER 	Event ID of the event
+task 	INTEGER 	Task value associated with the event
+level 	INTEGER 	The severity level associated with the event
+keywords 	BIGINT 	A bitmask of the keywords defined in the event
+data 	TEXT 	Data associated with the event
+eid 	TEXT 	Event ID
+select * from windows_events where eventid=4104 and channel='Security'
+wmi_cli_event_consumers
+WMI CommandLineEventConsumer, which can be used for persistance on Windows. See https://www.blackhat.com/docs/us-15/materials/us-15-Graeber-Abusing-Windows-Management-Instrumentation-WMI-To-Build-A-Persistent%20Asynchronous-And-Fileless-Backdoor-wp.pdf for more details.
+Column 	Type 	Description
+name 	TEXT 	Unique name of a consumer.
+command_line_template 	TEXT 	Standard string template that specifies the process to be started. This property can be NULL, and the ExecutablePath property is used as the command line.
+executable_path 	TEXT 	Module to execute. The string can specify the full path and file name of the module to execute, or it can specify a partial name. If a partial name is specified, the current drive and current directory are assumed.
+class 	TEXT 	The name of the class.
+relative_path 	TEXT 	Relative path to the class or instance.
+select filter,consumer,query,command_line_template,wcec.name from wmi_cli_event_consumers wcec left outer join wmi_filter_consumer_binding wcb on consumer = wcec.relative_path left outer join wmi_event_filters wef on wef.relative_path = wcb.filter;
+wmi_event_filters
+Lists WMI event filters.
+Column 	Type 	Description
+name 	TEXT 	Unique identifier of an event filter.
+query 	TEXT 	Windows Management Instrumentation Query Language (WQL) event query that specifies the set of events for consumer notification, and the specific conditions for notification.
+query_language 	TEXT 	Query language that the query is written in.
+class 	TEXT 	The name of the class.
+relative_path 	TEXT 	Relative path to the class or instance.
+select * from wmi_event_filters
+wmi_filter_consumer_binding
+Lists the relationship between event consumers and filters.
+Column 	Type 	Description
+consumer 	TEXT 	Reference to an instance of __EventConsumer that represents the object path to a logical consumer, the recipient of an event.
+filter 	TEXT 	Reference to an instance of __EventFilter that represents the object path to an event filter which is a query that specifies the type of event to be received.
+class 	TEXT 	The name of the class.
+relative_path 	TEXT 	Relative path to the class or instance.
+select * from wmi_filter_consumer_binding
+wmi_script_event_consumers
+WMI ActiveScriptEventConsumer, which can be used for persistance on Windows. See https://www.blackhat.com/docs/us-15/materials/us-15-Graeber-Abusing-Windows-Management-Instrumentation-WMI-To-Build-A-Persistent%20Asynchronous-And-Fileless-Backdoor-wp.pdf for more details.
+Column 	Type 	Description
+name 	TEXT 	Unique identifier for the event consumer.
+scripting_engine 	TEXT 	Name of the scripting engine to use, for example, 'VBScript'. This property cannot be NULL.
+script_file_name 	TEXT 	Name of the file from which the script text is read, intended as an alternative to specifying the text of the script in the ScriptText property.
+script_text 	TEXT 	Text of the script that is expressed in a language known to the scripting engine. This property must be NULL if the ScriptFileName property is not NULL.
+class 	TEXT 	The name of the class.
+relative_path 	TEXT 	Relative path to the class or instance.
+select filter,consumer,query,scripting_engine,script_file_name,script_text,wsec.name from wmi_script_event_consumers wsec left outer join wmi_filter_consumer_binding wcb on consumer = wsec.relative_path left outer join wmi_event_filters wef on wef.relative_path = wcb.filter;
