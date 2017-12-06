@@ -1,0 +1,260 @@
+ fbsd_kmods
+Loaded FreeBSD kernel modules.
+Column 	Type 	Description
+name 	TEXT 	Module name
+size 	INTEGER 	Size of module content
+refs 	INTEGER 	Module reverse dependencies
+address 	TEXT 	Kernel module address
+pkg_packages
+pkgng packages that are currently installed on the host system.
+Column 	Type 	Description
+name 	TEXT 	Package name
+version 	TEXT 	Package version
+flatsize 	BIGINT 	Package size in bytes
+arch 	TEXT 	Architecture(s) supported
+Ubuntu, CentOS
+apt_sources
+Current list of APT repositories or software channels.
+Column 	Type 	Description
+name 	TEXT 	Repository name
+base_uri 	TEXT 	Repository base URI
+package_cache_file 	TEXT 	Repository cache file
+release 	TEXT 	Release name
+component 	TEXT 	Repository component
+version 	TEXT 	Repository source version
+maintainer 	TEXT 	Repository maintainer
+site 	TEXT 	Repository site
+deb_packages
+The installed DEB package database.
+Column 	Type 	Description
+name 	TEXT 	Package name
+version 	TEXT 	Package version
+source 	TEXT 	Package source
+size 	BIGINT 	Package size in bytes
+arch 	TEXT 	Package architecture
+revision 	TEXT 	Package revision
+ec2_instance_metadata
+EC2 instance metadata.
+Column 	Type 	Description
+instance_id 	TEXT 	EC2 instance ID
+instance_type 	TEXT 	EC2 instance type
+architecture 	TEXT 	Hardware architecture of this EC2 instance
+region 	TEXT 	AWS region in which this instance launched
+availability_zone 	TEXT 	Availability zone in which this instance launched
+local_hostname 	TEXT 	Private IPv4 DNS hostname of the first interface of this instance
+local_ipv4 	TEXT 	Private IPv4 address of the first interface of this instance
+mac 	TEXT 	MAC address for the first network interface of this EC2 instance
+security_groups 	TEXT 	Comma separated list of security group names
+iam_arn 	TEXT 	If there is an IAM role associated with the instance, contains instance profile ARN
+ami_id 	TEXT 	AMI ID used to launch this EC2 instance
+reservation_id 	TEXT 	ID of the reservation
+account_id 	TEXT 	AWS account ID which owns this EC2 instance
+ssh_public_key 	TEXT 	SSH public key. Only available if supplied at instance launch time
+select * from ec2_instance_metadata
+ec2_instance_tags
+EC2 instance tag key value pairs.
+Column 	Type 	Description
+instance_id 	TEXT 	EC2 instance ID
+key 	TEXT 	Tag key
+value 	TEXT 	Tag value
+select * from ec2_instance_tags
+iptables
+Linux IP packet filtering and NAT tool.
+Column 	Type 	Description
+filter_name 	TEXT 	Packet matching filter table name.
+chain 	TEXT 	Size of module content.
+policy 	TEXT 	Policy that applies for this rule.
+target 	TEXT 	Target that applies for this rule.
+protocol 	INTEGER 	Protocol number identification.
+src_port 	TEXT 	Protocol source port(s).
+dst_port 	TEXT 	Protocol destination port(s).
+src_ip 	TEXT 	Source IP address.
+src_mask 	TEXT 	Source IP address mask.
+iniface 	TEXT 	Input interface for the rule.
+iniface_mask 	TEXT 	Input interface mask for the rule.
+dst_ip 	TEXT 	Destination IP address.
+dst_mask 	TEXT 	Destination IP address mask.
+outiface 	TEXT 	Output interface for the rule.
+outiface_mask 	TEXT 	Output interface mask for the rule.
+match 	TEXT 	Matching rule that applies.
+packets 	INTEGER 	Number of matching packets for this rule.
+bytes 	INTEGER 	Number of matching bytes for this rule.
+kernel_integrity
+Various Linux kernel integrity checked attributes.
+Column 	Type 	Description
+sycall_addr_modified 	INTEGER 	0 or 1, for whether a syscall table pointer is modified
+text_segment_hash 	TEXT 	Hash value for the kernel's .text memory segment
+kernel_modules
+Linux kernel modules both loaded and within the load search path.
+Column 	Type 	Description
+name 	TEXT 	Module name
+size 	TEXT 	Size of module content
+used_by 	TEXT 	Module reverse dependencies
+status 	TEXT 	Kernel module status
+address 	TEXT 	Kernel module address
+md_devices
+Software RAID array settings.
+Column 	Type 	Description
+device_name 	TEXT 	md device name
+status 	TEXT 	Current state of the array
+raid_level 	INTEGER 	Current raid level of the array
+size 	BIGINT 	size of the array in blocks
+chunk_size 	BIGINT 	chunk size in bytes
+raid_disks 	INTEGER 	Number of configured RAID disks in array
+nr_raid_disks 	INTEGER 	Number of partitions or disk devices to comprise the array
+working_disks 	INTEGER 	Number of working disks in array
+active_disks 	INTEGER 	Number of active disks in array
+failed_disks 	INTEGER 	Number of active disks in array
+spare_disks 	INTEGER 	Number of active disks in array
+superblock_state 	TEXT 	State of the superblock
+superblock_version 	TEXT 	Version of the superblock
+superblock_update_time 	BIGINT 	Unix timestamp of last update
+bitmap_on_mem 	TEXT 	Pages allocated in in-memory bitmap, if enabled
+bitmap_chunk_size 	TEXT 	Bitmap chunk size
+bitmap_external_file 	TEXT 	External referenced bitmap file
+recovery_progress 	TEXT 	Progress of the recovery activity
+recovery_finish 	TEXT 	Estimated duration of recovery activity
+recovery_speed 	TEXT 	Speed of recovery activity
+resync_progress 	TEXT 	Progress of the resync activity
+resync_finish 	TEXT 	Estimated duration of resync activity
+resync_speed 	TEXT 	Speed of resync activity
+reshape_progress 	TEXT 	Progress of the reshape activity
+reshape_finish 	TEXT 	Estimated duration of reshape activity
+reshape_speed 	TEXT 	Speed of reshape activity
+check_array_progress 	TEXT 	Progress of the resync activity
+check_array_finish 	TEXT 	Estimated duration of resync activity
+check_array_speed 	TEXT 	Speed of resync activity
+unused_devices 	TEXT 	Unused devices
+other 	TEXT 	Other information associated with array from /proc/mdstat
+md_drives
+Drive devices used for Software RAID.
+Column 	Type 	Description
+md_device_name 	TEXT 	md device name
+drive_name 	TEXT 	Drive device name
+slot 	INTEGER 	Slot position of disk
+state 	TEXT 	State of the drive
+md_personalities
+Software RAID setting supported by the kernel.
+Column 	Type 	Description
+name 	TEXT 	Name of personality supported by kernel
+memory_info
+Main memory information in bytes.
+Column 	Type 	Description
+memory_total 	BIGINT 	Total amount of physical RAM, in bytes
+memory_free 	BIGINT 	The amount of physical RAM, in bytes, left unused by the system
+buffers 	BIGINT 	The amount of physical RAM, in bytes, used for file buffers
+cached 	BIGINT 	The amount of physical RAM, in bytes, used as cache memory
+swap_cached 	BIGINT 	The amount of swap, in bytes, used as cache memory
+active 	BIGINT 	The total amount of buffer or page cache memory, in bytes, that is in active use
+inactive 	BIGINT 	The total amount of buffer or page cache memory, in bytes, that are free and available
+swap_total 	BIGINT 	The total amount of swap available, in bytes
+swap_free 	BIGINT 	The total amount of swap free, in bytes
+memory_map
+OS memory region map.
+Column 	Type 	Description
+name 	TEXT 	Region name
+start 	TEXT 	Start address of memory region
+end 	TEXT 	End address of memory region
+msr
+Various pieces of data stored in the model specific register per processor. NOTE: the msr kernel module must be enabled, and osquery must be run as root.
+Column 	Type 	Description
+processor_number 	BIGINT 	The processor number as reported in /proc/cpuinfo
+turbo_disabled 	BIGINT 	Whether the turbo feature is disabled.
+turbo_ratio_limit 	BIGINT 	The turbo feature ratio limit.
+platform_info 	BIGINT 	Platform information.
+perf_ctl 	BIGINT 	Performance setting for the processor.
+perf_status 	BIGINT 	Performance status for the processor.
+feature_control 	BIGINT 	Bitfield controling enabled features.
+rapl_power_limit 	BIGINT 	Run Time Average Power Limiting power limit.
+rapl_energy_status 	BIGINT 	Run Time Average Power Limiting energy status.
+rapl_power_units 	BIGINT 	Run Time Average Power Limiting power units.
+portage_keywords
+A summary about portage configurations like keywords, mask and unmask.
+Column 	Type 	Description
+package 	TEXT 	Package name
+version 	TEXT 	The version which are affected by the use flags, empty means all
+keyword 	TEXT 	The keyword applied to the package
+mask 	INTEGER 	If the package is masked
+unmask 	INTEGER 	If the package is unmasked
+portage_packages
+List of currently installed packages.
+Column 	Type 	Description
+package 	TEXT 	Package name
+version 	TEXT 	The version which are affected by the use flags, empty means all
+slot 	TEXT 	The slot used by package
+build_time 	BIGINT 	Unix time when package was built
+repository 	TEXT 	From which repository the ebuild was used
+eapi 	BIGINT 	The eapi for the ebuild
+size 	BIGINT 	The size of the package
+world 	INTEGER 	If package is in the world file
+portage_use
+List of enabled portage USE values for specific package.
+Column 	Type 	Description
+package 	TEXT 	Package name
+version 	TEXT 	The version of the installed package
+use 	TEXT 	USE flag which has been enabled for package
+rpm_package_files
+RPM packages that are currently installed on the host system.
+Column 	Type 	Description
+package 	TEXT 	RPM package name
+path 	TEXT 	Path name
+username 	TEXT 	File default username from info DB
+groupname 	TEXT 	File default groupname from info DB
+mode 	TEXT 	File permissions mode from info DB
+size 	BIGINT 	Expected file size in bytes from RPM info DB
+sha256 	TEXT 	SHA256 file digest from RPM info DB
+rpm_packages
+RPM packages that are currently installed on the host system.
+Column 	Type 	Description
+name 	TEXT 	RPM package name
+version 	TEXT 	Package version
+release 	TEXT 	Package release
+source 	TEXT 	Source RPM package name (optional)
+size 	BIGINT 	Package size in bytes
+sha1 	TEXT 	SHA1 hash of the package contents
+arch 	TEXT 	Architecture(s) supported
+shared_memory
+OS shared memory regions.
+Column 	Type 	Description
+shmid 	INTEGER 	Shared memory segment ID
+owner_uid 	BIGINT 	User ID of owning process
+creator_uid 	BIGINT 	User ID of creator process
+pid 	BIGINT 	Process ID to last use the segment
+creator_pid 	BIGINT 	Process ID that created the segment
+atime 	BIGINT 	Attached time
+dtime 	BIGINT 	Detached time
+ctime 	BIGINT 	Changed time
+permissions 	TEXT 	Memory segment permissions
+size 	BIGINT 	Size in bytes
+attached 	INTEGER 	Number of attached processes
+status 	TEXT 	Destination/attach status
+locked 	INTEGER 	1 if segment is locked else 0
+socket_events
+Track network socket opens and closes.
+Column 	Type 	Description
+action 	TEXT 	The socket action (bind, listen, close)
+pid 	BIGINT 	Process (or thread) ID
+path 	TEXT 	Path of executed file
+fd 	TEXT 	The file description for the process socket
+auid 	BIGINT 	Audit User ID
+success 	INTEGER 	The socket open attempt status
+family 	INTEGER 	The Internet protocol family ID
+protocol 	INTEGER 	The network protocol ID
+local_address 	TEXT 	Local address associated with socket
+remote_address 	TEXT 	Remote address associated with socket
+local_port 	INTEGER 	Local network protocol port number
+remote_port 	INTEGER 	Remote network protocol port number
+socket 	TEXT 	The local path (UNIX domain socket only)
+time 	BIGINT 	Time of execution in UNIX time
+uptime 	BIGINT 	Time of execution in system uptime
+eid 	TEXT 	Event ID
+syslog_events
+Column 	Type 	Description
+time 	BIGINT 	Current unix epoch time
+datetime 	TEXT 	Time known to syslog
+host 	TEXT 	Hostname configured for syslog
+severity 	INTEGER 	Syslog severity
+facility 	TEXT 	Syslog facility
+tag 	TEXT 	The syslog tag
+message 	TEXT 	The syslog message
+eid 	TEXT 	Event ID
