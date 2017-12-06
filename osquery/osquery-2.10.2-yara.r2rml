@@ -1,0 +1,27 @@
+
+yara
+Track YARA matches for files or PIDs.
+Column 	Type 	Description
+path 	TEXT 	The path scanned
+matches 	TEXT 	List of YARA matches
+count 	INTEGER 	Number of YARA matches
+sig_group 	TEXT 	Signature group used
+sigfile 	TEXT 	Signature file used
+strings 	TEXT 	Matching strings
+tags 	TEXT 	Matching tags
+select * from yara where path = '/etc/passwd'
+select * from yara where path LIKE '/etc/%'
+select * from yara where path = '/etc/passwd' and sigfile = '/etc/osquery/yara/test.yara'
+yara_events
+Track YARA matches for files specified in configuration data.
+Column 	Type 	Description
+target_path 	TEXT 	The path scanned
+category 	TEXT 	The category of the file
+action 	TEXT 	Change action (UPDATE, REMOVE, etc)
+transaction_id 	BIGINT 	ID used during bulk update
+matches 	TEXT 	List of YARA matches
+count 	INTEGER 	Number of YARA matches
+strings 	TEXT 	Matching strings
+tags 	TEXT 	Matching tags
+time 	BIGINT 	Time of the scan
+eid 	TEXT 	Event ID
