@@ -1,0 +1,344 @@
+
+arp_cache
+Address resolution cache, both static and dynamic (from ARP, NDP).
+Column 	Type 	Description
+address 	TEXT 	IPv4 address target
+mac 	TEXT 	MAC address of broadcasted address
+interface 	TEXT 	Interface of the network for the MAC
+permanent 	TEXT 	1 for true, 0 for false
+carbon_black_info
+Returns info about a Carbon Black sensor install.
+Column 	Type 	Description
+sensor_id 	INTEGER 	Sensor ID of the Carbon Black sensor
+config_name 	TEXT 	Sensor group
+collect_store_files 	INTEGER 	If the sensor is configured to send back binaries to the Carbon Black server
+collect_module_loads 	INTEGER 	If the sensor is configured to capture module loads
+collect_module_info 	INTEGER 	If the sensor is configured to collect metadata of binaries
+collect_file_mods 	INTEGER 	If the sensor is configured to collect file modification events
+collect_reg_mods 	INTEGER 	If the sensor is configured to collect registry modification events
+collect_net_conns 	INTEGER 	If the sensor is configured to collect network connections
+collect_processes 	INTEGER 	If the sensor is configured to process events
+collect_cross_processes 	INTEGER 	If the sensor is configured to cross process events
+collect_emet_events 	INTEGER 	If the sensor is configured to EMET events
+collect_data_file_writes 	INTEGER 	If the sensor is configured to collect non binary file writes
+collect_process_user_context 	INTEGER 	If the sensor is configured to collect the user running a process
+collect_sensor_operations 	INTEGER 	Unknown
+log_file_disk_quota_mb 	INTEGER 	Event file disk quota in MB
+log_file_disk_quota_percentage 	INTEGER 	Event file disk quota in a percentage
+protection_disabled 	INTEGER 	If the sensor is configured to report tamper events
+sensor_ip_addr 	TEXT 	IP address of the sensor
+sensor_backend_server 	TEXT 	Carbon Black server
+event_queue 	INTEGER 	Size in bytes of Carbon Black event files on disk
+binary_queue 	INTEGER 	Size in bytes of binaries waiting to be sent to Carbon Black server
+carves
+Forensic Carves.
+Column 	Type 	Description
+time 	BIGINT 	Time at which the carve was kicked off
+sha256 	TEXT 	A SHA256 sum of the carved archive
+size 	INTEGER 	Size of the carved archive
+path 	TEXT 	The path of the requested carve
+status 	TEXT 	Status of the carve, can be STARTING, PENDING, SUCCESS, or FAILED
+carve_guid 	TEXT 	Identifying value of the carve session
+carve 	INTEGER 	Set this value to '1' to start a file carve
+select * from carves where status like '%FAIL%'
+select * from carves where path like '/Users/%/Downloads/%' and carve=1
+chrome_extensions
+Chrome browser extensions.
+Column 	Type 	Description
+uid 	BIGINT 	The local user that owns the extension
+name 	TEXT 	Extension display name
+identifier 	TEXT 	Extension identifier
+version 	TEXT 	Extension-supplied version
+description 	TEXT 	Extension-optional description
+locale 	TEXT 	Default locale supported by extension
+update_url 	TEXT 	Extension-supplied update URI
+author 	TEXT 	Optional extension author
+persistent 	INTEGER 	1 If extension is persistent across all tabs else 0
+path 	TEXT 	Path to extension folder
+select * from users join chrome_extensions using (uid)
+cpuid
+Useful CPU features from the cpuid ASM call.
+Column 	Type 	Description
+feature 	TEXT 	Present feature flags
+value 	TEXT 	Bit value or string
+output_register 	TEXT 	Register used to for feature value
+output_bit 	INTEGER 	Bit in register value for feature value
+input_eax 	TEXT 	Value of EAX used
+curl
+Perform an http request and return stats about it.
+Column 	Type 	Description
+url 	TEXT 	The url for the request
+method 	TEXT 	The HTTP method for the request
+user_agent 	TEXT 	The user-agent string to use for the request
+response_code 	INTEGER 	The HTTP status code for the response
+round_trip_time 	BIGINT 	Time taken to complete the request
+bytes 	BIGINT 	Number of bytes in the response
+result 	TEXT 	The HTTP response body
+select url, round_trip_time, response_code from curl where url = 'https://github.com/facebook/osquery'
+curl_certificate
+Inspect TLS certificates by connecting to input hostnames.
+Column 	Type 	Description
+hostname 	TEXT 	Hostname (domain[:port]) to CURL
+common_name 	TEXT 	Common name of company issued to
+organization 	TEXT 	Organization issued to
+organization_unit 	TEXT 	Organization unit issued to
+serial_number 	TEXT 	Certificate serial number
+issuer_common_name 	TEXT 	Issuer common name
+issuer_organization 	TEXT 	Issuer organization
+issuer_organization_unit 	TEXT 	Issuer organization unit
+valid_from 	TEXT 	Period of validity start date
+valid_to 	TEXT 	Period of validity end date
+sha256_fingerprint 	TEXT 	SHA-256 fingerprint
+sha1_fingerprint 	TEXT 	SHA1 fingerprint
+select * from curl_certificate where hostname = 'osquery.io'
+etc_hosts
+Line-parsed /etc/hosts.
+Column 	Type 	Description
+address 	TEXT 	IP address mapping
+hostnames 	TEXT 	Raw hosts mapping
+etc_protocols
+Line-parsed /etc/protocols.
+Column 	Type 	Description
+name 	TEXT 	Protocol name
+number 	INTEGER 	Protocol number
+alias 	TEXT 	Protocol alias
+comment 	TEXT 	Comment with protocol description
+etc_services
+Line-parsed /etc/services.
+Column 	Type 	Description
+name 	TEXT 	Service name
+port 	INTEGER 	Service port number
+protocol 	TEXT 	Transport protocol (TCP/UDP)
+aliases 	TEXT 	Optional space separated list of other names for a service
+comment 	TEXT 	Optional comment for a service.
+hash
+Filesystem hash data.
+Column 	Type 	Description
+path 	TEXT 	Must provide a path or directory
+directory 	TEXT 	Must provide a path or directory
+md5 	TEXT 	MD5 hash of provided filesystem data
+sha1 	TEXT 	SHA1 hash of provided filesystem data
+sha256 	TEXT 	SHA256 hash of provided filesystem data
+select * from hash where path = '/etc/passwd'
+select * from hash where directory = '/etc/'
+interface_addresses
+Network interfaces and relevant metadata.
+Column 	Type 	Description
+interface 	TEXT 	Interface name
+address 	TEXT 	Specific address for interface
+mask 	TEXT 	Interface netmask
+broadcast 	TEXT 	Broadcast address for the interface
+point_to_point 	TEXT 	PtP address for the interface
+type 	TEXT 	Type of address. One of dhcp, manual, auto, other
+friendly_name 	TEXT 	The friendly display name of the interface.
+interface_details
+Detailed information and stats of network interfaces.
+Column 	Type 	Description
+interface 	TEXT 	Interface name
+mac 	TEXT 	MAC of interface (optional)
+type 	INTEGER 	Interface type (includes virtual)
+mtu 	INTEGER 	Network MTU
+metric 	INTEGER 	Metric based on the speed of the interface
+flags 	INTEGER 	Flags (netdevice) for the device
+ipackets 	BIGINT 	Input packets
+opackets 	BIGINT 	Output packets
+ibytes 	BIGINT 	Input bytes
+obytes 	BIGINT 	Output bytes
+ierrors 	BIGINT 	Input errors
+oerrors 	BIGINT 	Output errors
+idrops 	BIGINT 	Input drops
+odrops 	BIGINT 	Output drops
+collisions 	BIGINT 	Packet Collisions detected
+last_change 	BIGINT 	Time of last device modification (optional)
+friendly_name 	TEXT 	The friendly display name of the interface.
+description 	TEXT 	Short description of the object—a one-line string.
+manufacturer 	TEXT 	Name of the network adapter's manufacturer.
+connection_id 	TEXT 	Name of the network connection as it appears in the Network Connections Control Panel program.
+connection_status 	TEXT 	State of the network adapter connection to the network.
+enabled 	INTEGER 	Indicates whether the adapter is enabled or not.
+physical_adapter 	INTEGER 	Indicates whether the adapter is a physical or a logical adapter.
+speed 	INTEGER 	Estimate of the current bandwidth in bits per second.
+dhcp_enabled 	INTEGER 	If TRUE, the dynamic host configuration protocol (DHCP) server automatically assigns an IP address to the computer system when establishing a network connection.
+dhcp_lease_expires 	TEXT 	Expiration date and time for a leased IP address that was assigned to the computer by the dynamic host configuration protocol (DHCP) server.
+dhcp_lease_obtained 	TEXT 	Date and time the lease was obtained for the IP address assigned to the computer by the dynamic host configuration protocol (DHCP) server.
+dhcp_server 	TEXT 	IP address of the dynamic host configuration protocol (DHCP) server.
+dns_domain 	TEXT 	Organization name followed by a period and an extension that indicates the type of organization, such as 'microsoft.com'.
+dns_domain_suffix_search_order 	TEXT 	Array of DNS domain suffixes to be appended to the end of host names during name resolution.
+dns_host_name 	TEXT 	Host name used to identify the local computer for authentication by some utilities.
+dns_server_search_order 	TEXT 	Array of server IP addresses to be used in querying for DNS servers.
+select interface, mac, type, idrops as input_drops from interface_details;
+select interface, mac, type, flags, (1<<8) as promisc_flag from interface_details where (flags & promisc_flag) > 0;
+select interface, mac, type, flags, (1<<3) as loopback_flag from interface_details where (flags & loopback_flag) > 0;
+kernel_info
+Basic active kernel information.
+Column 	Type 	Description
+version 	TEXT 	Kernel version
+arguments 	TEXT 	Kernel arguments
+path 	TEXT 	Kernel path
+device 	TEXT 	Kernel device identifier
+listening_ports
+Processes with listening (bound) network sockets/ports.
+Column 	Type 	Description
+pid 	INTEGER 	Process (or thread) ID
+port 	INTEGER 	Transport layer port
+protocol 	INTEGER 	Transport protocol (TCP/UDP)
+family 	INTEGER 	Network protocol (IPv4, IPv6)
+address 	TEXT 	Specific address for bind
+logged_in_users
+Users with an active shell on the system.
+Column 	Type 	Description
+type 	TEXT 	Login type
+user 	TEXT 	User login name
+tty 	TEXT 	Device name
+host 	TEXT 	Remote hostname
+time 	INTEGER 	Time entry was made
+pid 	INTEGER 	Process (or thread) ID
+os_version
+A single row containing the operating system name and version.
+Column 	Type 	Description
+name 	TEXT 	Distribution or product name
+version 	TEXT 	Pretty, suitable for presentation, OS version
+major 	INTEGER 	Major release version
+minor 	INTEGER 	Minor release version
+patch 	INTEGER 	Optional patch release
+build 	TEXT 	Optional build-specific or variant string
+platform 	TEXT 	OS Platform or ID
+platform_like 	TEXT 	Closely related platforms
+codename 	TEXT 	OS version codename
+platform_info
+Information about EFI/UEFI/ROM and platform/boot.
+Column 	Type 	Description
+vendor 	TEXT 	Platform code vendor
+version 	TEXT 	Platform code version
+date 	TEXT 	Self-reported platform code update date
+revision 	TEXT 	BIOS major and minor revision
+address 	TEXT 	Relative address of firmware mapping
+size 	TEXT 	Size in bytes of firmware
+volume_size 	INTEGER 	(Optional) size of firmware volume
+extra 	TEXT 	Platform-specific additional information
+process_memory_map
+Process memory mapped files and pseudo device/regions.
+Column 	Type 	Description
+pid 	INTEGER 	Process (or thread) ID
+start 	TEXT 	Virtual start address (hex)
+end 	TEXT 	Virtual end address (hex)
+permissions 	TEXT 	r=read, w=write, x=execute, p=private (cow)
+offset 	BIGINT 	Offset into mapped path
+device 	TEXT 	MA:MI Major/minor device ID
+inode 	INTEGER 	Mapped path inode, 0 means uninitialized (BSS)
+path 	TEXT 	Path to mapped file or mapped type
+pseudo 	INTEGER 	1 If path is a pseudo path, else 0
+select * from process_memory_map where pid = 1
+process_open_sockets
+Processes which have open network sockets on the system.
+Column 	Type 	Description
+pid 	INTEGER 	Process (or thread) ID
+fd 	BIGINT 	Socket file descriptor number
+socket 	BIGINT 	Socket handle or inode number
+family 	INTEGER 	Network protocol (IPv4, IPv6)
+protocol 	INTEGER 	Transport protocol (TCP/UDP)
+local_address 	TEXT 	Socket local address
+remote_address 	TEXT 	Socket remote address
+local_port 	INTEGER 	Socket local port
+remote_port 	INTEGER 	Socket remote port
+path 	TEXT 	For UNIX sockets (family=AF_UNIX), the domain path
+select * from process_open_sockets where pid = 1
+processes
+All running processes on the host system.
+Column 	Type 	Description
+pid 	BIGINT 	Process (or thread) ID
+name 	TEXT 	The process path or shorthand argv[0]
+path 	TEXT 	Path to executed binary
+cmdline 	TEXT 	Complete argv
+state 	TEXT 	Process state
+cwd 	TEXT 	Process current working directory
+root 	TEXT 	Process virtual root directory
+uid 	BIGINT 	Unsigned user ID
+gid 	BIGINT 	Unsigned group ID
+euid 	BIGINT 	Unsigned effective user ID
+egid 	BIGINT 	Unsigned effective group ID
+suid 	BIGINT 	Unsigned saved user ID
+sgid 	BIGINT 	Unsigned saved group ID
+on_disk 	INTEGER 	The process path exists yes=1, no=0, unknown=-1
+wired_size 	BIGINT 	Bytes of unpagable memory used by process
+resident_size 	BIGINT 	Bytes of private memory used by process
+total_size 	BIGINT 	Total virtual memory size
+user_time 	BIGINT 	CPU time spent in user space
+system_time 	BIGINT 	CPU time spent in kernel space
+start_time 	BIGINT 	Process start in seconds since boot (non-sleeping)
+parent 	BIGINT 	Process parent's PID
+pgroup 	BIGINT 	Process group
+threads 	INTEGER 	Number of threads used by process
+nice 	INTEGER 	Process nice level (-20 to 20, default 0)
+select * from processes where pid = 1
+python_packages
+Python packages installed in a system.
+Column 	Type 	Description
+name 	TEXT 	Package display name
+version 	TEXT 	Package-supplied version
+summary 	TEXT 	Package-supplied summary
+author 	TEXT 	Optional package author
+license 	TEXT 	License under which package is launched
+path 	TEXT 	Path at which this module resides
+routes
+The active route table for the host system.
+Column 	Type 	Description
+destination 	TEXT 	Destination IP address
+netmask 	TEXT 	Netmask length
+gateway 	TEXT 	Route gateway
+source 	TEXT 	Route source
+flags 	INTEGER 	Flags to describe route
+interface 	TEXT 	Route local interface
+mtu 	INTEGER 	Maximum Transmission Unit for the route
+metric 	INTEGER 	Cost of route. Lowest is preferred
+type 	TEXT 	Type of route
+startup_items
+Applications and binaries set as user/login startup items.
+Column 	Type 	Description
+name 	TEXT 	Name of startup item
+path 	TEXT 	Path of startup item
+args 	TEXT 	Arguments provided to startup executable
+type 	TEXT 	Startup Item or Login Item
+source 	TEXT 	Directory or plist containing startup item
+status 	TEXT 	Startup status; either enabled or disabled
+username 	TEXT 	The user associated with the startup item
+system_info
+System information for identification.
+Column 	Type 	Description
+hostname 	TEXT 	Network hostname including domain
+uuid 	TEXT 	Unique ID provided by the system
+cpu_type 	TEXT 	CPU type
+cpu_subtype 	TEXT 	CPU subtype
+cpu_brand 	TEXT 	CPU brand string, contains vendor and model
+cpu_physical_cores 	INTEGER 	Max number of CPU physical cores
+cpu_logical_cores 	INTEGER 	Max number of CPU logical cores
+physical_memory 	BIGINT 	Total physical memory in bytes
+hardware_vendor 	TEXT 	Hardware or board vendor
+hardware_model 	TEXT 	Hardware or board model
+hardware_version 	TEXT 	Hardware or board version
+hardware_serial 	TEXT 	Device or board serial number
+computer_name 	TEXT 	Friendly computer name (optional)
+local_hostname 	TEXT 	Local hostname (optional)
+uptime
+Track time passed since last boot.
+Column 	Type 	Description
+days 	INTEGER 	Days of uptime
+hours 	INTEGER 	Hours of uptime
+minutes 	INTEGER 	Minutes of uptime
+seconds 	INTEGER 	Seconds of uptime
+total_seconds 	BIGINT 	Total uptime seconds
+users
+Local system users.
+Column 	Type 	Description
+uid 	BIGINT 	User ID
+gid 	BIGINT 	Group ID (unsigned)
+uid_signed 	BIGINT 	User ID as int64 signed (Apple)
+gid_signed 	BIGINT 	Default group ID as int64 signed (Apple)
+username 	TEXT 	Username
+description 	TEXT 	Optional user description
+directory 	TEXT 	User's home directory
+shell 	TEXT 	User's configured default shell
+uuid 	TEXT 	User's UUID (Apple)
+select * from users where uid = 1000
+select * from users where username = 'root'
+select count(*) from users u, user_groups ug where u.uid = ug.uid
