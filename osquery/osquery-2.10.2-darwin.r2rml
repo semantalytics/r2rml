@@ -1,0 +1,594 @@
+
+ad_config
+OS X Active Directory configuration.
+Column 	Type 	Description
+name 	TEXT 	The OS X-specific configuration name
+domain 	TEXT 	Active Directory trust domain
+option 	TEXT 	Canonical name of option
+value 	TEXT 	Variable typed option value
+alf
+OS X application layer firewall (ALF) service details.
+Column 	Type 	Description
+allow_signed_enabled 	INTEGER 	1 If allow signed mode is enabled else 0
+firewall_unload 	INTEGER 	1 If firewall unloading enabled else 0
+global_state 	INTEGER 	1 If the firewall start by default else 0
+logging_enabled 	INTEGER 	1 If logging mode is enabled else 0
+logging_option 	INTEGER 	Firewall logging option
+stealth_enabled 	INTEGER 	1 If stealth mode is enabled else 0
+version 	TEXT 	Application Layer Firewall version
+alf_exceptions
+OS X application layer firewall (ALF) service exceptions.
+Column 	Type 	Description
+path 	TEXT 	Path to the executable that is excepted
+state 	INTEGER 	Firewall exception state
+alf_explicit_auths
+ALF services explicitly allowed to perform networking.
+Column 	Type 	Description
+process 	TEXT 	Process name explicitly allowed
+alf_services
+OS X application layer firewall (Firewall) services.
+Column 	Type 	Description
+service 	TEXT 	Firewalled service name
+process 	TEXT 	Process name
+state 	INTEGER 	Firewall service state
+app_schemes
+OS X application schemes and handlers (e.g., http, file, mailto).
+Column 	Type 	Description
+scheme 	TEXT 	Name of the scheme/protocol
+handler 	TEXT 	Application label for the handler
+enabled 	INTEGER 	1 if this handler is the OS default, else 0
+external 	INTEGER 	1 if this handler does NOT exist on OS X by default, else 0
+protected 	INTEGER 	1 if this handler is protected (reserved) by OS X, else 0
+apps
+OS X applications installed in known search paths (e.g., /Applications).
+Column 	Type 	Description
+name 	TEXT 	Name of the Name.app folder
+path 	TEXT 	Absolute and full Name.app path
+bundle_executable 	TEXT 	Info properties CFBundleExecutable label
+bundle_identifier 	TEXT 	Info properties CFBundleIdentifier label
+bundle_name 	TEXT 	Info properties CFBundleName label
+bundle_short_version 	TEXT 	Info properties CFBundleShortVersionString label
+bundle_version 	TEXT 	Info properties CFBundleVersion label
+bundle_package_type 	TEXT 	Info properties CFBundlePackageType label
+environment 	TEXT 	Application-set environment variables
+element 	TEXT 	Does the app identify as a background agent
+compiler 	TEXT 	Info properties DTCompiler label
+development_region 	TEXT 	Info properties CFBundleDevelopmentRegion label
+display_name 	TEXT 	Info properties CFBundleDisplayName label
+info_string 	TEXT 	Info properties CFBundleGetInfoString label
+minimum_system_version 	TEXT 	Minimum version of OS X required for the app to run
+category 	TEXT 	The UTI that categorizes the app for the App Store
+applescript_enabled 	TEXT 	Info properties NSAppleScriptEnabled label
+copyright 	TEXT 	Info properties NSHumanReadableCopyright label
+last_opened_time 	DOUBLE 	The time that the app was last used
+asl
+Queries the Apple System Log data structure for system events.
+Column 	Type 	Description
+time 	INTEGER 	Unix timestamp. Set automatically
+time_nano_sec 	INTEGER 	Nanosecond time.
+host 	TEXT 	Sender's address (set by the server).
+sender 	TEXT 	Sender's identification string. Default is process name.
+facility 	TEXT 	Sender's facility. Default is 'user'.
+pid 	INTEGER 	Sending process ID encoded as a string. Set automatically.
+gid 	BIGINT 	GID that sent the log message (set by the server).
+uid 	BIGINT 	UID that sent the log message (set by the server).
+level 	INTEGER 	Log level number. See levels in asl.h.
+message 	TEXT 	Message text.
+ref_pid 	INTEGER 	Reference PID for messages proxied by launchd
+ref_proc 	TEXT 	Reference process for messages proxied by launchd
+extra 	TEXT 	Extra columns, in JSON format. Queries against this column are performed entirely in SQLite, so do not benefit from efficient querying via asl.h.
+authorization_mechanisms
+OS X Authorization mechanisms database.
+Column 	Type 	Description
+label 	TEXT 	Label of the authorization right
+plugin 	TEXT 	Authorization plugin name
+mechanism 	TEXT 	Name of the mechanism that will be called
+privileged 	TEXT 	If privileged it will run as root, else as an anonymous user
+entry 	TEXT 	The whole string entry
+select * from authorization_mechanisms;
+select * from authorization_mechanisms where label = 'system.login.console';
+select * from authorization_mechanisms where label = 'authenticate';
+authorizations
+OS X Authorization rights database.
+Column 	Type 	Description
+label 	TEXT 	Item name, usually in reverse domain format
+modified 	TEXT 	Label top-level key
+allow_root 	TEXT 	Label top-level key
+timeout 	TEXT 	Label top-level key
+version 	TEXT 	Label top-level key
+tries 	TEXT 	Label top-level key
+authenticate_user 	TEXT 	Label top-level key
+shared 	TEXT 	Label top-level key
+comment 	TEXT 	Label top-level key
+created 	TEXT 	Label top-level key
+class 	TEXT 	Label top-level key
+session_owner 	TEXT 	Label top-level key
+select * from authorizations;
+select * from authorizations where label = 'system.login.console';
+select * from authorizations where label = 'authenticate';
+select * from authorizations where label = 'system.preferences.softwareupdate';
+browser_plugins
+All C/NPAPI browser plugin details for all users.
+Column 	Type 	Description
+uid 	BIGINT 	The local user that owns the plugin
+name 	TEXT 	Plugin display name
+identifier 	TEXT 	Plugin identifier
+version 	TEXT 	Plugin short version
+sdk 	TEXT 	Build SDK used to compile plugin
+description 	TEXT 	Plugin description text
+development_region 	TEXT 	Plugin language-localization
+native 	INTEGER 	Plugin requires native execution
+path 	TEXT 	Path to plugin bundle
+disabled 	INTEGER 	Is the plugin disabled. 1 = Disabled
+select * from users join browser_plugins using (uid)
+crashes
+Application, System, and Mobile App crash logs.
+Column 	Type 	Description
+type 	TEXT 	Type of crash log
+pid 	BIGINT 	Process (or thread) ID of the crashed process
+path 	TEXT 	Path to the crashed process
+crash_path 	TEXT 	Location of log file
+identifier 	TEXT 	Identifier of the crashed process
+version 	TEXT 	Version info of the crashed process
+parent 	BIGINT 	Parent PID of the crashed process
+responsible 	TEXT 	Process responsible for the crashed process
+uid 	INTEGER 	User ID of the crashed process
+datetime 	TEXT 	Date/Time at which the crash occurred
+crashed_thread 	BIGINT 	Thread ID which crashed
+stack_trace 	TEXT 	Most recent frame from the stack trace
+exception_type 	TEXT 	Exception type of the crash
+exception_codes 	TEXT 	Exception codes from the crash
+exception_notes 	TEXT 	Exception notes from the crash
+registers 	TEXT 	The value of the system registers
+select * from users join crashes using (uid)
+device_firmware
+A best-effort list of discovered firmware versions.
+Column 	Type 	Description
+type 	TEXT 	Type of device
+device 	TEXT 	The device name
+version 	TEXT 	Firmware version
+disk_events
+Track DMG disk image events (appearance/disappearance) when opened.
+Column 	Type 	Description
+action 	TEXT 	Appear or disappear
+path 	TEXT 	Path of the DMG file accessed
+name 	TEXT 	Disk event name
+device 	TEXT 	Disk event BSD name
+uuid 	TEXT 	UUID of the volume inside DMG if available
+size 	BIGINT 	Size of partition in bytes
+ejectable 	INTEGER 	1 if ejectable, 0 if not
+mountable 	INTEGER 	1 if mountable, 0 if not
+writable 	INTEGER 	1 if writable, 0 if not
+content 	TEXT 	Disk event content
+media_name 	TEXT 	Disk event media name string
+vendor 	TEXT 	Disk event vendor string
+filesystem 	TEXT 	Filesystem if available
+checksum 	TEXT 	UDIF Master checksum if available (CRC32)
+time 	BIGINT 	Time of appearance/disappearance in UNIX time
+eid 	TEXT 	Event ID
+event_taps
+Returns information about installed event taps.
+Column 	Type 	Description
+enabled 	INTEGER 	Is the Event Tap enabled
+event_tap_id 	INTEGER 	Unique ID for the Tap
+event_tapped 	TEXT 	The mask that identifies the set of events to be observed.
+process_being_tapped 	INTEGER 	The process ID of the target application
+tapping_process 	INTEGER 	The process ID of the application that created the event tap.
+extended_attributes
+Returns the extended attributes for files (similar to Windows ADS).
+Column 	Type 	Description
+path 	TEXT 	Absolute file path
+directory 	TEXT 	Directory of file(s)
+key 	TEXT 	Name of the value generated from the extended attribute
+value 	TEXT 	The parsed information from the attribute
+base64 	INTEGER 	1 if the value is base64 encoded else 0
+fan_speed_sensors
+Fan speeds.
+Column 	Type 	Description
+fan 	TEXT 	Fan number
+name 	TEXT 	Fan name
+actual 	INTEGER 	Actual speed
+min 	INTEGER 	Minimum speed
+max 	INTEGER 	Maximum speed
+target 	INTEGER 	Target speed
+gatekeeper
+OS X Gatekeeper Details.
+Column 	Type 	Description
+assessments_enabled 	INTEGER 	1 If a Gatekeeper is enabled else 0
+dev_id_enabled 	INTEGER 	1 If a Gatekeeper allows execution from identified developers else 0
+version 	TEXT 	Version of Gatekeeper's gke.bundle
+opaque_version 	TEXT 	Version of Gatekeeper's gkopaque.bundle
+gatekeeper_approved_apps
+Gatekeeper apps a user has allowed to run.
+Column 	Type 	Description
+path 	TEXT 	Path of executable allowed to run
+requirement 	TEXT 	Code signing requirement language
+ctime 	DOUBLE 	Last change time
+mtime 	DOUBLE 	Last modification time
+homebrew_packages
+The installed homebrew package database.
+Column 	Type 	Description
+name 	TEXT 	Package name
+path 	TEXT 	Package install path
+version 	TEXT 	Current 'linked' version
+iokit_devicetree
+The IOKit registry matching the DeviceTree plane.
+Column 	Type 	Description
+name 	TEXT 	Device node name
+class 	TEXT 	Best matching device class (most-specific category)
+id 	BIGINT 	IOKit internal registry ID
+parent 	BIGINT 	Parent device registry ID
+device_path 	TEXT 	Device tree path
+service 	INTEGER 	1 if the device conforms to IOService else 0
+busy_state 	INTEGER 	1 if the device is in a busy state else 0
+retain_count 	INTEGER 	The device reference count
+depth 	INTEGER 	Device nested depth
+iokit_registry
+The full IOKit registry without selecting a plane.
+Column 	Type 	Description
+name 	TEXT 	Default name of the node
+class 	TEXT 	Best matching device class (most-specific category)
+id 	BIGINT 	IOKit internal registry ID
+parent 	BIGINT 	Parent registry ID
+busy_state 	INTEGER 	1 if the node is in a busy state else 0
+retain_count 	INTEGER 	The node reference count
+depth 	INTEGER 	Node nested depth
+kernel_extensions
+OS X's kernel extensions, both loaded and within the load search path.
+Column 	Type 	Description
+idx 	INTEGER 	Extension load tag or index
+refs 	INTEGER 	Reference count
+size 	BIGINT 	Bytes of wired memory used by extension
+name 	TEXT 	Extension label
+version 	TEXT 	Extension version
+linked_against 	TEXT 	Indexes of extensions this extension is linked against
+path 	TEXT 	Optional path to extension bundle
+kernel_panics
+System kernel panic logs.
+Column 	Type 	Description
+path 	TEXT 	Location of log file
+time 	TEXT 	Formatted time of the event
+registers 	TEXT 	A space delimited line of register:value pairs
+frame_backtrace 	TEXT 	Backtrace of the crashed module
+module_backtrace 	TEXT 	Modules appearing in the crashed module's backtrace
+dependencies 	TEXT 	Module dependencies existing in crashed module's backtrace
+name 	TEXT 	Process name corresponding to crashed thread
+os_version 	TEXT 	Version of the operating system
+kernel_version 	TEXT 	Version of the system kernel
+system_model 	TEXT 	Physical system model, for example 'MacBookPro12,1 (Mac-E43C1C25D4880AD6)'
+uptime 	BIGINT 	System uptime at kernel panic in nanoseconds
+last_loaded 	TEXT 	Last loaded module before panic
+last_unloaded 	TEXT 	Last unloaded module before panic
+key_events
+Track key events.
+Column 	Type 	Description
+time 	BIGINT 	Time
+keychain_acls
+Applications that have ACL entries in the keychain.
+Column 	Type 	Description
+keychain_path 	TEXT 	The path of the keychain
+authorizations 	TEXT 	A space delimited set of authorization attributes
+path 	TEXT 	The path of the authorized application
+description 	TEXT 	The description included with the ACL entry
+label 	TEXT 	An optional label tag that may be included with the keychain entry
+select label, description, authorizations, path, count(path) as c from keychain_acls where label != '' and path != '' group by label having c > 1;
+keychain_items
+Generic details about keychain items.
+Column 	Type 	Description
+label 	TEXT 	Generic item name
+description 	TEXT 	Optional item description
+comment 	TEXT 	Optional keychain comment
+created 	TEXT 	Data item was created
+modified 	TEXT 	Date of last modification
+type 	TEXT 	Keychain item type (class)
+path 	TEXT 	Path to keychain containing item
+launchd
+LaunchAgents and LaunchDaemons from default search paths.
+Column 	Type 	Description
+path 	TEXT 	Path to daemon or agent plist
+name 	TEXT 	File name of plist (used by launchd)
+label 	TEXT 	Daemon or agent service name
+program 	TEXT 	Path to target program
+run_at_load 	TEXT 	Should the program run on launch load
+keep_alive 	TEXT 	Should the process be restarted if killed
+on_demand 	TEXT 	Deprecated key, replaced by keep_alive
+disabled 	TEXT 	Skip loading this daemon or agent on boot
+username 	TEXT 	Run this daemon or agent as this username
+groupname 	TEXT 	Run this daemon or agent as this group
+stdout_path 	TEXT 	Pipe stdout to a target path
+stderr_path 	TEXT 	Pipe stderr to a target path
+start_interval 	TEXT 	Frecuency of running in seconds
+program_arguments 	TEXT 	Command line arguments passed to program
+watch_paths 	TEXT 	Key that launches daemon or agent if path is modified
+queue_directories 	TEXT 	Similar to watch_paths but only with non-empty directories
+inetd_compatibility 	TEXT 	Run this daemon or agent as it was launched from inetd
+start_on_mount 	TEXT 	Run daemon or agent every time a filesystem is mounted
+root_directory 	TEXT 	Key used to specify a directory to chroot to before launch
+working_directory 	TEXT 	Key used to specify a directory to chdir to before launch
+process_type 	TEXT 	Key describes the intended purpose of the job
+launchd_overrides
+Override keys, per user, for LaunchDaemons and Agents.
+Column 	Type 	Description
+label 	TEXT 	Daemon or agent service name
+key 	TEXT 	Name of the override key
+value 	TEXT 	Overriden value
+uid 	BIGINT 	User ID applied to the override, 0 applies to all
+path 	TEXT 	Path to daemon or agent plist
+managed_policies
+The managed configuration policies from AD, MDM, MCX, etc.
+Column 	Type 	Description
+domain 	TEXT 	System or manager-chosen domain key
+uuid 	TEXT 	Optional UUID assigned to policy set
+name 	TEXT 	Policy key name
+value 	TEXT 	Policy value
+username 	TEXT 	Policy applies only this user
+manual 	INTEGER 	1 if policy was loaded manually, otherwise 0
+nfs_shares
+NFS shares exported by the host.
+Column 	Type 	Description
+share 	TEXT 	Filesystem path to the share
+options 	TEXT 	Options string set on the export share
+readonly 	INTEGER 	1 if the share is exported readonly else 0
+nvram
+Apple NVRAM variable listing.
+Column 	Type 	Description
+name 	TEXT 	Variable name
+type 	TEXT 	Data type (CFData, CFString, etc)
+value 	TEXT 	Raw variable data
+package_bom
+OS X package bill of materials (BOM) file list.
+Column 	Type 	Description
+filepath 	TEXT 	Package file or directory
+uid 	INTEGER 	Expected user of file or directory
+gid 	INTEGER 	Expected group of file or directory
+mode 	INTEGER 	Expected permissions
+size 	BIGINT 	Expected file size
+modified_time 	INTEGER 	Timestamp the file was installed
+path 	TEXT 	Path of package bom
+select * from package_bom where path = '/var/db/receipts/com.apple.pkg.MobileDevice.bom'
+package_install_history
+OS X package install history.
+Column 	Type 	Description
+package_id 	TEXT 	Label packageIdentifiers
+time 	INTEGER 	Label date as UNIX timestamp
+name 	TEXT 	Package display name
+version 	TEXT 	Package display version
+source 	TEXT 	Install source: usually the installer process name
+content_type 	TEXT 	Package content_type (optional)
+package_receipts
+OS X package receipt details.
+Column 	Type 	Description
+package_id 	TEXT 	Package domain identifier
+package_filename 	TEXT 	Filename of original .pkg file
+version 	TEXT 	Installed package version
+location 	TEXT 	Optional relative install path on volume
+install_time 	DOUBLE 	Timestamp of install time
+installer_name 	TEXT 	Name of installer process
+path 	TEXT 	Path of receipt plist
+select * from package_bom where path = '/var/db/receipts/com.apple.pkg.MobileDevice.bom'
+plist
+Read and parse a plist file.
+Column 	Type 	Description
+key 	TEXT 	Preference top-level key
+subkey 	TEXT 	Intemediate key path, includes lists/dicts
+value 	TEXT 	String value of most CF types
+path 	TEXT 	(optional) read preferences from a plist
+select * from plist where path = '/Library/Preferences/loginwindow.plist'
+power_sensors
+Machine power (currents, voltages, wattages, etc) sensors.
+Column 	Type 	Description
+key 	TEXT 	The SMC key on OS X
+category 	TEXT 	The sensor category: currents, voltage, wattage
+name 	TEXT 	Name of power source
+value 	TEXT 	Power in Watts
+select * from power_sensors where category = 'voltage'
+preferences
+OS X defaults and managed preferences.
+Column 	Type 	Description
+domain 	TEXT 	Application ID usually in com.name.product format
+key 	TEXT 	Preference top-level key
+subkey 	TEXT 	Intemediate key path, includes lists/dicts
+value 	TEXT 	String value of most CF types
+forced 	INTEGER 	1 if the value is forced/managed, else 0
+username 	TEXT 	(optional) read preferences for a specific user
+host 	TEXT 	'current' or 'any' host, where 'current' takes precedence
+select * from preferences where domain = 'loginwindow'
+select preferences.* from users join preferences using (username)
+quicklook_cache
+Files and thumbnails within OS X's Quicklook Cache.
+Column 	Type 	Description
+path 	TEXT 	Path of file
+rowid 	INTEGER 	Quicklook file rowid key
+fs_id 	TEXT 	Quicklook file fs_id key
+volume_id 	INTEGER 	Parsed volume ID from fs_id
+inode 	INTEGER 	Parsed file ID (inode) from fs_id
+mtime 	INTEGER 	Parsed version date field
+size 	BIGINT 	Parsed version size field
+label 	TEXT 	Parsed version 'gen' field
+last_hit_date 	INTEGER 	Apple date format for last thumbnail cache hit
+hit_count 	TEXT 	Number of cache hits on thumbnail
+icon_mode 	BIGINT 	Thumbnail icon mode
+cache_path 	TEXT 	Path to cache data
+safari_extensions
+Safari browser extension details for all users.
+Column 	Type 	Description
+uid 	BIGINT 	The local user that owns the extension
+name 	TEXT 	Extension display name
+identifier 	TEXT 	Extension identifier
+version 	TEXT 	Extension long version
+sdk 	TEXT 	Bundle SDK used to compile extension
+update_url 	TEXT 	Extension-supplied update URI
+author 	TEXT 	Optional extension author
+developer_id 	TEXT 	Optional developer identifier
+description 	TEXT 	Optional extension description text
+path 	TEXT 	Path to extension XAR bundle
+select count(*) from users JOIN safari_extensions using (uid)
+sandboxes
+OS X application sandboxes container details.
+Column 	Type 	Description
+label 	TEXT 	UTI-format bundle or label ID
+user 	TEXT 	Sandbox owner
+enabled 	INTEGER 	Application sandboxings enabled on container
+build_id 	TEXT 	Sandbox-specific identifier
+bundle_path 	TEXT 	Application bundle used by the sandbox
+path 	TEXT 	Path to sandbox container directory
+shared_folders
+Folders available to others via SMB or AFP.
+Column 	Type 	Description
+name 	TEXT 	The shared name of the folder as it appears to other users
+path 	TEXT 	Absolute path of shared folder on the local system
+sharing_preferences
+OS X Sharing preferences.
+Column 	Type 	Description
+screen_sharing 	INTEGER 	1 If screen sharing is enabled else 0
+file_sharing 	INTEGER 	1 If file sharing is enabled else 0
+printer_sharing 	INTEGER 	1 If printer sharing is enabled else 0
+remote_login 	INTEGER 	1 If remote login is enabled else 0
+remote_management 	INTEGER 	1 If remote management is enabled else 0
+remote_apple_events 	INTEGER 	1 If remote apple events are enabled else 0
+internet_sharing 	INTEGER 	1 If internet sharing is enabled else 0
+bluetooth_sharing 	INTEGER 	1 If bluetooth sharing is enabled for any user else 0
+disc_sharing 	INTEGER 	1 If CD or DVD sharing is enabled else 0
+signature
+File (executable, bundle, installer, disk) code signing status.
+Column 	Type 	Description
+path 	TEXT 	Must provide a path or directory
+signed 	INTEGER 	1 If the file is signed else 0
+identifier 	TEXT 	The signing identifier sealed into the signature
+cdhash 	TEXT 	SHA1 hash of the application Code Directory
+team_identifier 	TEXT 	The team signing identifier sealed into the signature
+authority 	TEXT 	Certificate Common Name
+select * from signature where path = '/bin/ls'
+sip_config
+Apple's System Integrity Protection (rootless) status.
+Column 	Type 	Description
+config_flag 	TEXT 	The System Integrity Protection config flag
+enabled 	INTEGER 	1 if this configuration is enabled, otherwise 0
+enabled_nvram 	INTEGER 	1 if this configuration is enabled, otherwise 0
+select * from sip_config
+smc_keys
+Apple's system management controller keys.
+Column 	Type 	Description
+key 	TEXT 	4-character key
+type 	TEXT 	SMC-reported type literal type
+size 	INTEGER 	Reported size of data in bytes
+value 	TEXT 	A type-encoded representation of the key value
+hidden 	INTEGER 	1 if this key is normally hidden, otherwise 0
+select * from smc_keys where key = 'MOJO'
+temperature_sensors
+Machine's temperature sensors.
+Column 	Type 	Description
+key 	TEXT 	The SMC key on OS X
+name 	TEXT 	Name of temperature source
+celsius 	DOUBLE 	Temperature in Celsius
+fahrenheit 	DOUBLE 	Temperature in Fahrenheit
+time_machine_backups
+Backups to drives using TimeMachine.
+Column 	Type 	Description
+destination_id 	TEXT 	Time Machine destination ID
+backup_date 	INTEGER 	Backup Date
+select alias, backup_date, td.destination_id, root_volume_uuid, encryption from time_machine_backups tb join time_machine_destinations td on (td.destination_id=tb.destination_id);
+time_machine_destinations
+Locations backed up to using Time Machine.
+Column 	Type 	Description
+alias 	TEXT 	Human readable name of drive
+destination_id 	TEXT 	Time Machine destination ID
+consistency_scan_date 	INTEGER 	Consistency scan date
+root_volume_uuid 	TEXT 	Root UUID of backup volume
+bytes_available 	INTEGER 	Bytes available on volume
+bytes_used 	INTEGER 	Bytes used on volume
+encryption 	TEXT 	Last known encrypted state
+select alias, backup_date, td.destination_id, root_volume_uuid, encryption from time_machine_backups tb join time_machine_destinations td on (td.destination_id=tb.destination_id);
+virtual_memory_info
+Darwin Virtual Memory statistics.
+Column 	Type 	Description
+free 	BIGINT 	Total number of free pages.
+active 	BIGINT 	Total number of active pages.
+inactive 	BIGINT 	Total number of inactive pages.
+speculative 	BIGINT 	Total number of speculative pages.
+throttled 	BIGINT 	Total number of throttled pages.
+wired 	BIGINT 	Total number of wired down pages.
+purgeable 	BIGINT 	Total number of purgeable pages.
+faults 	BIGINT 	Total number of calls to vm_faults.
+copy 	BIGINT 	Total number of copy-on-write pages.
+zero_fill 	BIGINT 	Total number of zero filled pages.
+reactivated 	BIGINT 	Total number of reactivated pages.
+purged 	BIGINT 	Total number of purged pages.
+file_backed 	BIGINT 	Total number of file backed pages.
+anonymous 	BIGINT 	Total number of anonymous pages.
+uncompressed 	BIGINT 	Total number of uncompressed pages.
+compressor 	BIGINT 	The number of pages used to store compressed VM pages.
+decompressed 	BIGINT 	The total number of pages that have been decompressed by the VM compressor.
+compressed 	BIGINT 	The total number of pages that have been compressed by the VM compressor.
+page_ins 	BIGINT 	The total number of requests for pages from a pager.
+page_outs 	BIGINT 	Total number of pages paged out.
+swap_ins 	BIGINT 	The total number of compressed pages that have been swapped out to disk.
+swap_outs 	BIGINT 	The total number of compressed pages that have been swapped back in from disk.
+select * from virtual_memory_info;
+wifi_networks
+OS X known/remembered Wi-Fi networks list.
+Column 	Type 	Description
+ssid 	TEXT 	SSID octets of the network
+network_name 	TEXT 	Name of the network
+security_type 	TEXT 	Type of security on this network
+last_connected 	INTEGER 	Last time this netword was connected to as a unix_time
+passpoint 	INTEGER 	1 if Passpoint is supported, 0 otherwise
+possibly_hidden 	INTEGER 	1 if network is possibly a hidden network, 0 otherwise
+roaming 	INTEGER 	1 if roaming is supported, 0 otherwise
+roaming_profile 	TEXT 	Describe the roaming profile, usually one of Single, Dual or Multi
+captive_portal 	INTEGER 	1 if this network has a captive portal, 0 otherwise
+auto_login 	INTEGER 	1 if auto login is enabled, 0 otherwise
+temporarily_disabled 	INTEGER 	1 if this network is temporarily disabled, 0 otherwise
+disabled 	INTEGER 	1 if this network is disabled, 0 otherwise
+wifi_survey
+Scan for nearby WiFi networks.
+Column 	Type 	Description
+interface 	TEXT 	Name of the interface
+ssid 	TEXT 	SSID octets of the network
+bssid 	TEXT 	The current basic service set identifier
+network_name 	TEXT 	Name of the network
+country_code 	TEXT 	The country code (ISO/IEC 3166-1:1997) for the network
+rssi 	INTEGER 	The current received signal strength indication (dbm)
+noise 	INTEGER 	The current noise measurement (dBm)
+channel 	INTEGER 	Channel number
+channel_width 	INTEGER 	Channel width
+channel_band 	INTEGER 	Channel band
+wifi_status
+OS X current WiFi status.
+Column 	Type 	Description
+interface 	TEXT 	Name of the interface
+ssid 	TEXT 	SSID octets of the network
+bssid 	TEXT 	The current basic service set identifier
+network_name 	TEXT 	Name of the network
+country_code 	TEXT 	The country code (ISO/IEC 3166-1:1997) for the network
+security_type 	TEXT 	Type of security on this network
+rssi 	INTEGER 	The current received signal strength indication (dbm)
+noise 	INTEGER 	The current noise measurement (dBm)
+channel 	INTEGER 	Channel number
+channel_width 	INTEGER 	Channel width
+channel_band 	INTEGER 	Channel band
+transmit_rate 	TEXT 	The current transmit rate
+mode 	TEXT 	The current operating mode for the Wi-Fi interface
+xprotect_entries
+Database of the machine's XProtect signatures.
+Column 	Type 	Description
+name 	TEXT 	Description of XProtected malware
+launch_type 	TEXT 	Launch services content type
+identity 	TEXT 	XProtect identity (SHA1) of content
+filename 	TEXT 	Use this file name to match
+filetype 	TEXT 	Use this file type to match
+optional 	INTEGER 	Match any of the identities/patterns for this XProtect name
+uses_pattern 	INTEGER 	Uses a match pattern instead of identity
+xprotect_meta
+Database of the machine's XProtect browser-related signatures.
+Column 	Type 	Description
+identifier 	TEXT 	Browser plugin or extension identifier
+type 	TEXT 	Either plugin or extension
+developer_id 	TEXT 	Developer identity (SHA1) of extension
+min_version 	TEXT 	The minimum allowed plugin version.
+xprotect_reports
+Database of XProtect matches (if user generated/sent an XProtect report).
+Column 	Type 	Description
+name 	TEXT 	Description of XProtected malware
+user_action 	TEXT 	Action taken by user after prompted
+time 	TEXT 	Quarantine alert time
