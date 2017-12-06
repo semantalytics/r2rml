@@ -1,0 +1,566 @@
+
+acpi_tables
+Firmware ACPI functional table common metadata and content.
+Column 	Type 	Description
+name 	TEXT 	ACPI table name
+size 	INTEGER 	Size of compiled table data
+md5 	TEXT 	MD5 hash of table content
+augeas
+Configuration files parsed by augeas.
+Column 	Type 	Description
+node 	TEXT 	The node path of the configuration item
+value 	TEXT 	The value of the configuration item
+label 	TEXT 	The label of the configuration item
+path 	TEXT 	The path to the configuration file
+select * from augeas where path = '/etc/hosts'
+authorized_keys
+A line-delimited authorized_keys table.
+Column 	Type 	Description
+uid 	BIGINT 	The local owner of authorized_keys file
+algorithm 	TEXT 	algorithim of key
+key 	TEXT 	parsed authorized keys line
+key_file 	TEXT 	Path to the authorized_keys file
+select * from users join authorized_keys using (uid)
+block_devices
+Block (buffered access) device file nodes: disks, ramdisks, and DMG containers.
+Column 	Type 	Description
+name 	TEXT 	Block device name
+parent 	TEXT 	Block device parent name
+vendor 	TEXT 	Block device vendor string
+model 	TEXT 	Block device model string identifier
+size 	BIGINT 	Block device size in blocks
+block_size 	INTEGER 	Block size in bytes
+uuid 	TEXT 	Block device Universally Unique Identifier
+type 	TEXT 	Block device type string
+label 	TEXT 	Block device label string
+cpu_time
+Displays information from /proc/stat file about the time the cpu cores spent in different parts of the system.
+Column 	Type 	Description
+core 	INTEGER 	Name of the cpu (core)
+user 	BIGINT 	Time spent in user mode
+nice 	BIGINT 	Time spent in user mode with low priority (nice)
+system 	BIGINT 	Time spent in system mode
+idle 	BIGINT 	Time spent in the idle task
+iowait 	BIGINT 	Time spent waiting for I/O to complete
+irq 	BIGINT 	Time spent servicing interrupts
+softirq 	BIGINT 	Time spent servicing softirqs
+steal 	BIGINT 	Time spent in other operating systems when running in a virtualized environment
+guest 	BIGINT 	Time spent running a virtual CPU for a guest OS under the control of the Linux kernel
+guest_nice 	BIGINT 	Time spent running a niced guest
+crontab
+Line parsed values from system and user cron/tab.
+Column 	Type 	Description
+event 	TEXT 	The job @event name (rare)
+minute 	TEXT 	The exact minute for the job
+hour 	TEXT 	The hour of the day for the job
+day_of_month 	TEXT 	The day of the month for the job
+month 	TEXT 	The month of the year for the job
+day_of_week 	TEXT 	The day of the week for the job
+command 	TEXT 	Raw command string
+path 	TEXT 	File parsed
+disk_encryption
+Disk encryption status and information.
+Column 	Type 	Description
+name 	TEXT 	Disk name
+uuid 	TEXT 	Disk Universally Unique Identifier
+encrypted 	INTEGER 	1 If encrypted: true (disk is encrypted), else 0
+type 	TEXT 	Description of cipher type and mode if available
+uid 	TEXT 	Currently authenticated user if available (Apple)
+user_uuid 	TEXT 	UUID of authenticated user if available (Apple)
+dns_resolvers
+Resolvers used by this host.
+Column 	Type 	Description
+id 	INTEGER 	Address type index or order
+type 	TEXT 	Address type: sortlist, nameserver, search
+address 	TEXT 	Resolver IP/IPv6 address
+netmask 	TEXT 	Address (sortlist) netmask length
+options 	BIGINT 	Resolver options
+docker_container_labels
+Docker container labels.
+Column 	Type 	Description
+id 	TEXT 	Container ID
+key 	TEXT 	Label key
+value 	TEXT 	Optional label value
+select * from docker_container_labels
+select * from docker_container_labels where id = '1234567890abcdef'
+select * from docker_container_labels where id = '11b2399e1426d906e62a0c357650e363426d6c56dbe2f35cbaa9b452250e3355'
+docker_container_mounts
+Docker container mounts.
+Column 	Type 	Description
+id 	TEXT 	Container ID
+type 	TEXT 	Type of mount (bind, volume)
+name 	TEXT 	Optional mount name
+source 	TEXT 	Source path on host
+destination 	TEXT 	Destination path inside container
+driver 	TEXT 	Driver providing the mount
+mode 	TEXT 	Mount options (rw, ro)
+rw 	INTEGER 	1 if read/write. 0 otherwise
+propagation 	TEXT 	Mount propagation
+select * from docker_container_mounts
+select * from docker_container_mounts where id = '1234567890abcdef'
+select * from docker_container_mounts where id = '11b2399e1426d906e62a0c357650e363426d6c56dbe2f35cbaa9b452250e3355'
+docker_container_networks
+Docker container networks.
+Column 	Type 	Description
+id 	TEXT 	Container ID
+name 	TEXT 	Network name
+network_id 	TEXT 	Network ID
+endpoint_id 	TEXT 	Endpoint ID
+gateway 	TEXT 	Gateway
+ip_address 	TEXT 	IP address
+ip_prefix_len 	INTEGER 	IP subnet prefix length
+ipv6_gateway 	TEXT 	IPv6 gateway
+ipv6_address 	TEXT 	IPv6 address
+ipv6_prefix_len 	INTEGER 	IPv6 subnet prefix length
+mac_address 	TEXT 	MAC address
+select * from docker_container_networks
+select * from docker_container_networks where id = '1234567890abcdef'
+select * from docker_container_networks where id = '11b2399e1426d906e62a0c357650e363426d6c56dbe2f35cbaa9b452250e3355'
+docker_container_ports
+Docker container ports.
+Column 	Type 	Description
+id 	TEXT 	Container ID
+type 	TEXT 	Protocol (tcp, udp)
+port 	INTEGER 	Port inside the container
+host_ip 	TEXT 	Host IP address on which public port is listening
+host_port 	INTEGER 	Host port
+select * from docker_container_ports
+select * from docker_container_ports where id = '1234567890abcdef'
+select * from docker_container_ports where id = '11b2399e1426d906e62a0c357650e363426d6c56dbe2f35cbaa9b452250e3355'
+docker_container_processes
+Docker container processes.
+Column 	Type 	Description
+id 	TEXT 	Container ID
+pid 	BIGINT 	Process ID
+name 	TEXT 	The process path or shorthand argv[0]
+cmdline 	TEXT 	Complete argv
+state 	TEXT 	Process state
+uid 	BIGINT 	User ID
+gid 	BIGINT 	Group ID
+euid 	BIGINT 	Effective user ID
+egid 	BIGINT 	Effective group ID
+suid 	BIGINT 	Saved user ID
+sgid 	BIGINT 	Saved group ID
+wired_size 	BIGINT 	Bytes of unpagable memory used by process
+resident_size 	BIGINT 	Bytes of private memory used by process
+total_size 	BIGINT 	Total virtual memory size
+start_time 	BIGINT 	Process start in seconds since boot (non-sleeping)
+parent 	BIGINT 	Process parent's PID
+pgroup 	BIGINT 	Process group
+threads 	INTEGER 	Number of threads used by process
+nice 	INTEGER 	Process nice level (-20 to 20, default 0)
+user 	TEXT 	User name
+time 	TEXT 	Cumulative CPU time. [DD-]HH:MM:SS format
+cpu 	DOUBLE 	CPU utilization as percentage
+mem 	DOUBLE 	Memory utilization as percentage
+select * from docker_container_processes where id = '1234567890abcdef'
+select * from docker_container_processes where id = '11b2399e1426d906e62a0c357650e363426d6c56dbe2f35cbaa9b452250e3355'
+docker_container_stats
+Docker container statistics. Queries on this table take at least one second.
+Column 	Type 	Description
+id 	TEXT 	Container ID
+name 	TEXT 	Container name
+pids 	INTEGER 	Number of processes
+read 	BIGINT 	UNIX time when stats were read
+preread 	BIGINT 	UNIX time when stats were last read
+interval 	BIGINT 	Difference between read and preread in nano-seconds
+disk_read 	BIGINT 	Total disk read bytes
+disk_write 	BIGINT 	Total disk write bytes
+num_procs 	INTEGER 	Number of processors
+cpu_total_usage 	BIGINT 	Total CPU usage
+cpu_kernelmode_usage 	BIGINT 	CPU kernel mode usage
+cpu_usermode_usage 	BIGINT 	CPU user mode usage
+system_cpu_usage 	BIGINT 	CPU system usage
+online_cpus 	INTEGER 	Online CPUs
+pre_cpu_total_usage 	BIGINT 	Last read total CPU usage
+pre_cpu_kernelmode_usage 	BIGINT 	Last read CPU kernel mode usage
+pre_cpu_usermode_usage 	BIGINT 	Last read CPU user mode usage
+pre_system_cpu_usage 	BIGINT 	Last read CPU system usage
+pre_online_cpus 	INTEGER 	Last read online CPUs
+memory_usage 	BIGINT 	Memory usage
+memory_max_usage 	BIGINT 	Memory maximum usage
+memory_limit 	BIGINT 	Memory limit
+network_rx_bytes 	BIGINT 	Total network bytes read
+network_tx_bytes 	BIGINT 	Total network bytes transmitted
+select * from docker_container_stats where id = 'de8cfdc74c850967'
+select * from docker_container_stats where id = 'de8cfdc74c850967fd3832e128f4d12e2d5476a4aea282734bfb7e57f66fce2f'
+docker_containers
+Docker containers information.
+Column 	Type 	Description
+id 	TEXT 	Container ID
+name 	TEXT 	Container name
+image 	TEXT 	Docker image (name) used to launch this container
+image_id 	TEXT 	Docker image ID
+command 	TEXT 	Command with arguments
+created 	BIGINT 	Time of creation as UNIX time
+state 	TEXT 	Container state (created, restarting, running, removing, paused, exited, dead)
+status 	TEXT 	Container status information
+select * from docker_containers where id = '11b2399e1426d906e62a0c357650e363426d6c56dbe2f35cbaa9b452250e3355'
+select * from docker_containers where name = '/hello'
+docker_image_labels
+Docker image labels.
+Column 	Type 	Description
+id 	TEXT 	Image ID
+key 	TEXT 	Label key
+value 	TEXT 	Optional label value
+select * from docker_image_labels
+select * from docker_image_labels where id = '1234567890abcdef'
+select * from docker_image_labels where id = '11b2399e1426d906e62a0c357650e363426d6c56dbe2f35cbaa9b452250e3355'
+docker_images
+Docker images information.
+Column 	Type 	Description
+id 	TEXT 	Image ID
+created 	BIGINT 	Time of creation as UNIX time
+size_bytes 	BIGINT 	Size of image in bytes
+tags 	TEXT 	Comma-separated list of repository tags
+select * from docker_images
+select * from docker_images where id = '6a2f32de169d'
+select * from docker_images where id = '6a2f32de169d14e6f8a84538eaa28f2629872d7d4f580a303b296c60db36fbd7'
+docker_info
+Docker system information.
+Column 	Type 	Description
+id 	TEXT 	Docker system ID
+containers 	INTEGER 	Total number of containers
+containers_running 	INTEGER 	Number of containers currently running
+containers_paused 	INTEGER 	Number of containers in paused state
+containers_stopped 	INTEGER 	Number of containers in stopped state
+images 	INTEGER 	Number of images
+storage_driver 	TEXT 	Storage driver
+memory_limit 	INTEGER 	1 if memory limit support is enabled. 0 otherwise
+swap_limit 	INTEGER 	1 if swap limit support is enabled. 0 otherwise
+kernel_memory 	INTEGER 	1 if kernel memory limit support is enabled. 0 otherwise
+cpu_cfs_period 	INTEGER 	1 if CPU Completely Fair Scheduler (CFS) period support is enabled. 0 otherwise
+cpu_cfs_quota 	INTEGER 	1 if CPU Completely Fair Scheduler (CFS) quota support is enabled. 0 otherwise
+cpu_shares 	INTEGER 	1 if CPU share weighting support is enabled. 0 otherwise
+cpu_set 	INTEGER 	1 if CPU set selection support is enabled. 0 otherwise
+ipv4_forwarding 	INTEGER 	1 if IPv4 forwarding is enabled. 0 otherwise
+bridge_nf_iptables 	INTEGER 	1 if bridge netfilter iptables is enabled. 0 otherwise
+bridge_nf_ip6tables 	INTEGER 	1 if bridge netfilter ip6tables is enabled. 0 otherwise
+oom_kill_disable 	INTEGER 	1 if Out-of-memory kill is disabled. 0 otherwise
+logging_driver 	TEXT 	Logging driver
+cgroup_driver 	TEXT 	Control groups driver
+kernel_version 	TEXT 	Kernel version
+os 	TEXT 	Operating system
+os_type 	TEXT 	Operating system type
+architecture 	TEXT 	Hardware architecture
+cpus 	INTEGER 	Number of CPUs
+memory 	BIGINT 	Total memory
+http_proxy 	TEXT 	HTTP proxy
+https_proxy 	TEXT 	HTTPS proxy
+no_proxy 	TEXT 	Comma-separated list of domain extensions proxy should not be used for
+name 	TEXT 	Name of the docker host
+server_version 	TEXT 	Server version
+root_dir 	TEXT 	Docker root directory
+select * from docker_info
+docker_network_labels
+Docker network labels.
+Column 	Type 	Description
+id 	TEXT 	Network ID
+key 	TEXT 	Label key
+value 	TEXT 	Optional label value
+select * from docker_network_labels
+select * from docker_network_labels where id = '1234567890abcdef'
+select * from docker_network_labels where id = '11b2399e1426d906e62a0c357650e363426d6c56dbe2f35cbaa9b452250e3355'
+docker_networks
+Docker networks information.
+Column 	Type 	Description
+id 	TEXT 	Network ID
+name 	TEXT 	Network name
+driver 	TEXT 	Network driver
+created 	BIGINT 	Time of creation as UNIX time
+enable_ipv6 	INTEGER 	1 if IPv6 is enabled on this network. 0 otherwise
+subnet 	TEXT 	Network subnet
+gateway 	TEXT 	Network gateway
+select * from docker_networks
+select * from docker_networks where id = 'cfd2ffd49439'
+select * from docker_networks where id = 'cfd2ffd494395b75d77539761df40cde06a2b6b497e0c9c1adc6c5a79539bfad'
+docker_version
+Docker version information.
+Column 	Type 	Description
+version 	TEXT 	Docker version
+api_version 	TEXT 	API version
+min_api_version 	TEXT 	Minimum API version supported
+git_commit 	TEXT 	Docker build git commit
+go_version 	TEXT 	Go version
+os 	TEXT 	Operating system
+arch 	TEXT 	Hardware architecture
+kernel_version 	TEXT 	Kernel version
+build_time 	TEXT 	Build time
+select version from docker_version
+docker_volume_labels
+Docker volume labels.
+Column 	Type 	Description
+name 	TEXT 	Volume name
+key 	TEXT 	Label key
+value 	TEXT 	Optional label value
+select * from docker_volume_labels
+select * from docker_volume_labels where name = 'btrfs'
+docker_volumes
+Docker volumes information.
+Column 	Type 	Description
+name 	TEXT 	Volume name
+driver 	TEXT 	Volume driver
+mount_point 	TEXT 	Mount point
+type 	TEXT 	Volume type
+select * from docker_volumes
+select * from docker_volumes where name = 'btrfs'
+file_events
+Track time/action changes to files specified in configuration data.
+Column 	Type 	Description
+target_path 	TEXT 	The path associated with the event
+category 	TEXT 	The category of the file defined in the config
+action 	TEXT 	Change action (UPDATE, REMOVE, etc)
+transaction_id 	BIGINT 	ID used during bulk update
+inode 	BIGINT 	Filesystem inode number
+uid 	BIGINT 	Owning user ID
+gid 	BIGINT 	Owning group ID
+mode 	TEXT 	Permission bits
+size 	BIGINT 	Size of file in bytes
+atime 	BIGINT 	Last access time
+mtime 	BIGINT 	Last modification time
+ctime 	BIGINT 	Last status change time
+md5 	TEXT 	The MD5 of the file after change
+sha1 	TEXT 	The SHA1 of the file after change
+sha256 	TEXT 	The SHA256 of the file after change
+hashed 	INTEGER 	1 if the file was hashed, 0 if not, -1 if hashing failed
+time 	BIGINT 	Time of file event
+eid 	TEXT 	Event ID
+firefox_addons
+Firefox browser extensions, webapps, and addons.
+Column 	Type 	Description
+uid 	BIGINT 	The local user that owns the addon
+name 	TEXT 	Addon display name
+identifier 	TEXT 	Addon identifier
+creator 	TEXT 	Addon-supported creator string
+type 	TEXT 	Extension, addon, webapp
+version 	TEXT 	Addon-supplied version string
+description 	TEXT 	Addon-supplied description string
+source_url 	TEXT 	URL that installed the addon
+visible 	INTEGER 	1 If the addon is shown in browser else 0
+active 	INTEGER 	1 If the addon is active else 0
+disabled 	INTEGER 	1 If the addon is application-disabled else 0
+autoupdate 	INTEGER 	1 If the addon applies background updates else 0
+native 	INTEGER 	1 If the addon includes binary components else 0
+location 	TEXT 	Global, profile location
+path 	TEXT 	Path to plugin bundle
+select * from users join firefox_addons using (uid)
+groups
+Local system groups.
+Column 	Type 	Description
+gid 	BIGINT 	Unsigned int64 group ID
+gid_signed 	BIGINT 	A signed int64 version of gid
+groupname 	TEXT 	Canonical local group name
+select * from groups where gid = 0
+hardware_events
+Hardware (PCI/USB/HID) events from UDEV or IOKit.
+Column 	Type 	Description
+action 	TEXT 	Remove, insert, change properties, etc
+path 	TEXT 	Local device path assigned (optional)
+type 	TEXT 	Type of hardware and hardware event
+driver 	TEXT 	Driver claiming the device
+vendor 	TEXT 	Hardware device vendor
+vendor_id 	TEXT 	Hex encoded Hardware vendor identifier
+model 	TEXT 	Hardware device model
+model_id 	TEXT 	Hex encoded Hardware model identifier
+serial 	TEXT 	Device serial (optional)
+revision 	TEXT 	Device revision (optional)
+time 	BIGINT 	Time of hardware event
+eid 	TEXT 	Event ID
+known_hosts
+A line-delimited known_hosts table.
+Column 	Type 	Description
+uid 	BIGINT 	The local user that owns the known_hosts file
+key 	TEXT 	parsed authorized keys line
+key_file 	TEXT 	Path to known_hosts file
+select * from users join known_hosts using (uid)
+last
+System logins and logouts.
+Column 	Type 	Description
+username 	TEXT 	Entry username
+tty 	TEXT 	Entry terminal
+pid 	INTEGER 	Process (or thread) ID
+type 	INTEGER 	Entry type, according to ut_type types (utmp.h)
+time 	INTEGER 	Entry timestamp
+host 	TEXT 	Entry hostname
+load_average
+Displays information about the system wide load averages.
+Column 	Type 	Description
+period 	TEXT 	Period over which the average is calculated.
+average 	TEXT 	Load average over the specified period.
+select * from load_average;
+magic
+Magic number recognition library table.
+Column 	Type 	Description
+path 	TEXT 	Absolute path to target file
+data 	TEXT 	Magic number data from libmagic
+mime_type 	TEXT 	MIME type data from libmagic
+mime_encoding 	TEXT 	MIME encoding data from libmagic
+mounts
+System mounted devices and filesystems (not process specific).
+Column 	Type 	Description
+device 	TEXT 	Mounted device
+device_alias 	TEXT 	Mounted device alias
+path 	TEXT 	Mounted device path
+type 	TEXT 	Mounted device type
+blocks_size 	BIGINT 	Block size in bytes
+blocks 	BIGINT 	Mounted device used blocks
+blocks_free 	BIGINT 	Mounted device free blocks
+blocks_available 	BIGINT 	Mounted device available blocks
+inodes 	BIGINT 	Mounted device used inodes
+inodes_free 	BIGINT 	Mounted device free inodes
+flags 	TEXT 	Mounted device flags
+opera_extensions
+Opera browser extensions.
+Column 	Type 	Description
+uid 	BIGINT 	The local user that owns the extension
+name 	TEXT 	Extension display name
+identifier 	TEXT 	Extension identifier
+version 	TEXT 	Extension-supplied version
+description 	TEXT 	Extension-optional description
+locale 	TEXT 	Default locale supported by extension
+update_url 	TEXT 	Extension-supplied update URI
+author 	TEXT 	Optional extension author
+persistent 	INTEGER 	1 If extension is persistent across all tabs else 0
+path 	TEXT 	Path to extension folder
+select * from users join opera_extensions using (uid)
+pci_devices
+PCI devices active on the host system.
+Column 	Type 	Description
+pci_slot 	TEXT 	PCI Device used slot
+pci_class 	TEXT 	PCI Device class
+driver 	TEXT 	PCI Device used driver
+vendor 	TEXT 	PCI Device vendor
+vendor_id 	TEXT 	Hex encoded PCI Device vendor identifier
+model 	TEXT 	PCI Device model
+model_id 	TEXT 	Hex encoded PCI Device model identifier
+process_envs
+A key/value table of environment variables for each process.
+Column 	Type 	Description
+pid 	INTEGER 	Process (or thread) ID
+key 	TEXT 	Environment variable name
+value 	TEXT 	Environment variable value
+select * from process_envs where pid = 1
+select pe.* from process_envs pe, (select * from processes limit 10) p where p.pid = pe.pid;
+process_events
+Track time/action process executions.
+Column 	Type 	Description
+pid 	BIGINT 	Process (or thread) ID
+path 	TEXT 	Path of executed file
+mode 	TEXT 	File mode permissions
+cmdline 	TEXT 	Command line arguments (argv)
+cmdline_size 	BIGINT 	Actual size (bytes) of command line arguments
+env 	TEXT 	Environment variables delimited by spaces
+env_count 	BIGINT 	Number of environment variables
+env_size 	BIGINT 	Actual size (bytes) of environment list
+cwd 	TEXT 	The process current working directory
+auid 	BIGINT 	Audit User ID at process start
+uid 	BIGINT 	User ID at process start
+euid 	BIGINT 	Effective user ID at process start
+gid 	BIGINT 	Group ID at process start
+egid 	BIGINT 	Effective group ID at process start
+owner_uid 	BIGINT 	File owner user ID
+owner_gid 	BIGINT 	File owner group ID
+atime 	BIGINT 	File last access in UNIX time
+mtime 	BIGINT 	File modification in UNIX time
+ctime 	BIGINT 	File last metadata change in UNIX time
+btime 	BIGINT 	File creation in UNIX time
+overflows 	TEXT 	List of structures that overflowed
+parent 	BIGINT 	Process parent's PID
+time 	BIGINT 	Time of execution in UNIX time
+uptime 	BIGINT 	Time of execution in system uptime
+status 	BIGINT 	OpenBSM Attribute: Status of the process
+eid 	TEXT 	Event ID
+process_open_files
+File descriptors for each process.
+Column 	Type 	Description
+pid 	BIGINT 	Process (or thread) ID
+fd 	BIGINT 	Process-specific file descriptor number
+path 	TEXT 	Filesystem path of descriptor
+select * from process_open_files where pid = 1
+prometheus_metrics
+Network interfaces and relevant metadata.
+Column 	Type 	Description
+target_name 	TEXT 	Address of prometheus target
+metric_name 	TEXT 	Name of collected Prometheus metric
+metric_value 	DOUBLE 	Value of collected Prometheus metric
+timestamp_ms 	BIGINT 	Unix timestamp of collected data in MS
+shell_history
+A line-delimited (command) table of per-user .*_history data.
+Column 	Type 	Description
+uid 	BIGINT 	Shell history owner
+time 	INTEGER 	Entry timestamp
+command 	TEXT 	Unparsed date/line/command history line
+history_file 	TEXT 	Path to the .*_history for this user
+select * from users join shell_history using (uid)
+smbios_tables
+BIOS (DMI) structure common details and content.
+Column 	Type 	Description
+number 	INTEGER 	Table entry number
+type 	INTEGER 	Table entry type
+description 	TEXT 	Table entry description
+handle 	INTEGER 	Table entry handle
+header_size 	INTEGER 	Header size in bytes
+size 	INTEGER 	Table entry size in bytes
+md5 	TEXT 	MD5 hash of table entry
+sudoers
+Rules for running commands as other users via sudo.
+Column 	Type 	Description
+header 	TEXT 	Symbol for given rule
+rule_details 	TEXT 	Rule definition
+suid_bin
+suid binaries in common locations.
+Column 	Type 	Description
+path 	TEXT 	Binary path
+username 	TEXT 	Binary owner username
+groupname 	TEXT 	Binary owner group
+permissions 	TEXT 	Binary permissions
+system_controls
+sysctl names, values, and settings information.
+Column 	Type 	Description
+name 	TEXT 	Full sysctl MIB name
+oid 	TEXT 	Control MIB
+subsystem 	TEXT 	Subsystem ID, control type
+current_value 	TEXT 	Value of setting
+config_value 	TEXT 	The MIB value set in /etc/sysctl.conf
+type 	TEXT 	Data type
+usb_devices
+USB devices that are actively plugged into the host system.
+Column 	Type 	Description
+usb_address 	INTEGER 	USB Device used address
+usb_port 	INTEGER 	USB Device used port
+vendor 	TEXT 	USB Device vendor string
+vendor_id 	TEXT 	Hex encoded USB Device vendor identifier
+version 	TEXT 	USB Device version number
+model 	TEXT 	USB Device model string
+model_id 	TEXT 	Hex encoded USB Device model identifier
+serial 	TEXT 	USB Device serial connection
+class 	TEXT 	USB Device class
+subclass 	TEXT 	USB Device subclass
+protocol 	TEXT 	USB Device protocol
+removable 	INTEGER 	1 If USB device is removable else 0
+user_events
+Track user events from the audit framework.
+Column 	Type 	Description
+uid 	BIGINT 	User ID
+auid 	BIGINT 	Audit User ID
+pid 	BIGINT 	Process (or thread) ID
+message 	TEXT 	Message from the event
+type 	INTEGER 	The file description for the process socket
+path 	TEXT 	Supplied path from event
+address 	TEXT 	The Internet protocol address or family ID
+terminal 	TEXT 	The network protocol ID
+time 	BIGINT 	Time of execution in UNIX time
+uptime 	BIGINT 	Time of execution in system uptime
+eid 	TEXT 	Event ID
+user_groups
+Local system user group relationships.
+Column 	Type 	Description
+uid 	BIGINT 	User ID
+gid 	BIGINT 	Group ID
+user_ssh_keys
+Returns the private keys in the users ~/.ssh directory and whether or not they are encrypted.
+Column 	Type 	Description
+uid 	BIGINT 	The local user that owns the key file
+path 	TEXT 	Path to key file
+encrypted 	INTEGER 	1 if key is encrypted, 0 otherwise
+select * from users join user_ssh_keys using (uid) where encrypted = 0
