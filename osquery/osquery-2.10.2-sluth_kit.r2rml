@@ -1,0 +1,40 @@
+
+device_file
+Similar to the file table, but use TSK and allow block address access.
+Column 	Type 	Description
+device 	TEXT 	Absolute file path to device node
+partition 	TEXT 	A partition number
+path 	TEXT 	A logical path within the device node
+filename 	TEXT 	Name portion of file path
+inode 	BIGINT 	Filesystem inode number
+uid 	BIGINT 	Owning user ID
+gid 	BIGINT 	Owning group ID
+mode 	TEXT 	Permission bits
+size 	BIGINT 	Size of file in bytes
+block_size 	INTEGER 	Block size of filesystem
+atime 	BIGINT 	Last access time
+mtime 	BIGINT 	Last modification time
+ctime 	BIGINT 	Creation time
+hard_links 	INTEGER 	Number of hard links
+type 	TEXT 	File status
+device_hash
+Similar to the hash table, but use TSK and allow block address access.
+Column 	Type 	Description
+device 	TEXT 	Absolute file path to device node
+partition 	TEXT 	A partition number
+inode 	BIGINT 	Filesystem inode number
+md5 	TEXT 	MD5 hash of provided inode data
+sha1 	TEXT 	SHA1 hash of provided inode data
+sha256 	TEXT 	SHA256 hash of provided inode data
+device_partitions
+Use TSK to enumerate details about partitions on a disk device.
+Column 	Type 	Description
+device 	TEXT 	Absolute file path to device node
+partition 	INTEGER 	A partition number or description
+label 	TEXT 	
+type 	TEXT 	
+offset 	BIGINT 	
+blocks_size 	BIGINT 	Byte size of each block
+blocks 	BIGINT 	Number of blocks
+inodes 	BIGINT 	Number of meta nodes
+flags 	INTEGER 
